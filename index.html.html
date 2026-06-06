@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Music Progress Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0e0e0f; --bg2: #161618;
+    --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.12);
+    --text: #f0efe8; --text2: #9b9a94; --text3: #5a5957;
+    --purple: #7F77DD; --success: #2a6e4a; --success-text: #5DCAA5;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem; }
+  .container { max-width: 680px; margin: 0 auto; }
+  h1 { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 400; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 2rem; }
+  .overall { background: var(--bg2); border: 0.5px solid var(--border2); border-radius: 12px; padding: 16px 20px; margin-bottom: 2rem; display: flex; align-items: center; gap: 16px; }
+  .overall-num { font-family: 'DM Mono', monospace; font-size: 28px; font-weight: 500; color: var(--text); min-width: 56px; }
+  .bar-track { flex: 1; height: 3px; background: var(--border2); border-radius: 2px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 2px; transition: width 0.4s cubic-bezier(0.4,0,0.2,1); }
+  .phase-label { font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; margin: 2rem 0 10px; }
+  .artist-card { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 8px; transition: border-color 0.2s; }
+  .artist-card:hover { border-color: var(--border2); }
+  .artist-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .artist-name { font-size: 14px; font-weight: 500; color: var(--text); min-width: 170px; }
+  .pct { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text3); min-width: 32px; text-align: right; }
+  .albums { display: flex; flex-direction: column; gap: 5px; }
+  .album-row { display: flex; align-items: center; gap: 10px; padding: 2px 0; }
+  .album-check { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid var(--border2); cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: background 0.15s, border-color 0.15s; }
+  .album-check:hover { border-color: rgba(255,255,255,0.3); }
+  .album-check.done { background: var(--success); border-color: var(--success); }
+  .album-check.done::after { content: ''; display: block; width: 4px; height: 7px; border: 1.5px solid var(--success-text); border-top: none; border-left: none; transform: rotate(45deg) translate(-0.5px,-1px); }
+  .album-label { font-size: 13px; color: var(--text2); flex: 1; }
+  .album-label.done { text-decoration: line-through; color: var(--text3); }
+  @media (max-width: 480px) { .artist-name { min-width: 120px; font-size: 13px; } }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Music Progress Tracker</h1>
+  <div class="overall">
+    <div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:4px;">Overall progress</div>
+      <div class="overall-num" id="overall-num">0%</div>
+    </div>
+    <div class="bar-track" style="margin-left:8px;">
+      <div class="bar-fill" id="overall-bar" style="width:0%;background:var(--purple)"></div>
+    </div>
+  </div>
+  <div id="tracker"></div>
+</div>
+<script>
+const data = [
+  { phase: "Phase 1 — Finish what you started", color: "#7F77DD", artists: [
+    { name: "Tyler the Creator", albums: ["Goblin","Wolf","Cherry Bomb","Flower Boy ✓","IGOR ✓","Call Me If You Get Lost","Chromakopia ✓","Don't Tap the Glass"] },
+    { name: "Daniel Caesar", albums: ["Freudian ✓","Case Study 01","Never Enough","Son of Spergy"] },
+    { name: "Lil Tecca", albums: ["We Love You Tecca","Virgo World","We Love You Tecca 2","Tec","Plan A","Dopamine ✓"] },
+  ]},
+  { phase: "Phase 2 — Easy unlocks", color: "#1D9E75", artists: [
+    { name: "Don Toliver", albums: ["Heaven or Hell","Love Sick","Life of a Don","Hardstone Psycho","Octane"] },
+    { name: "Frank Ocean", albums: ["Nostalgia Ultra","Channel Orange","Blonde"] },
+    { name: "Mac Miller", albums: ["Blue Slide Park","Watching Movies","GO:OD AM","The Divine Feminine","Swimming","Circles"] },
+    { name: "A Boogie wit da Hoodie", albums: ["Artist","TBA","Hoodie SZN","Artist 2.0","Me vs Myself"] },
+    { name: "Brent Faiyaz", albums: ["Sonder Son","Wasteland","Larger Than Life","Icon ✓"] },
+    { name: "Playboi Carti", albums: ["Playboi Carti","Die Lit","Whole Lotta Red","MUSIC"] },
+  ]},
+  { phase: "Phase 3 — Level up", color: "#378ADD", artists: [
+    { name: "J. Cole", albums: ["Cole World","Born Sinner","2014 Forest Hills Drive","KOD","The Off-Season","It's a Boy","The Fall-Off"] },
+    { name: "Tame Impala", albums: ["Innerspeaker","Lonerism","Currents","The Slow Rush"] },
+    { name: "Joey Bada$$", albums: ["1999","B4.Da.$$","All-Amerikkkan Bada$$","2000"] },
+    { name: "Kanye West", albums: ["College Dropout","Late Registration","Graduation","808s","MBDTF","Yeezus","TLOP","ye","Donda","Vultures 1","Vultures 2","Bully ✓"] },
+    { name: "Drake", albums: ["Thank Me Later","Take Care","Nothing Was The Same","If You're Reading This","Views","More Life","Scorpion","CLB","Honestly Nevermind","For All The Dogs","$ome $exy $ongs 4 U","Iceman","Habibti","Maid of Honour"] },
+  ]},
+  { phase: "Phase 4 — Heavy hitters", color: "#D85A30", artists: [
+    { name: "Kendrick Lamar", albums: ["Section.80","good kid m.A.A.d city","To Pimp a Butterfly","DAMN.","Mr. Morale & The Big Steppers","GNX"] },
+    { name: "MF DOOM", albums: ["Operation Doomsday","Madvillainy","MM..FOOD","Born Like This","JJ DOOM"] },
+  ]},
+];
+
+const STORAGE_KEY = 'music_tracker_v2';
+const state = {};
+let totalAlbums = 0;
+
+data.forEach(phase => {
+  phase.artists.forEach(a => {
+    a.albums.forEach((al, i) => {
+      const key = a.name + '|' + i;
+      state[key] = al.endsWith(' ✓');
+      totalAlbums++;
+    });
+  });
+});
+
+try {
+  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+  Object.keys(saved).forEach(k => { if (k in state) state[k] = saved[k]; });
+} catch(e) {}
+
+function save() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {} }
+
+function updateOverall() {
+  const done = Object.values(state).filter(Boolean).length;
+  const pct = Math.round(done / totalAlbums * 100);
+  document.getElementById('overall-num').textContent = pct + '%';
+  document.getElementById('overall-bar').style.width = pct + '%';
+}
+
+function toggle(key, artistName, total) {
+  state[key] = !state[key];
+  save();
+  document.querySelector('[data-key="'+key+'"]').classList.toggle('done', state[key]);
+  document.querySelector('[data-label="'+key+'"]').classList.toggle('done', state[key]);
+  const keys = Object.keys(state).filter(k => k.startsWith(artistName + '|'));
+  const pct = Math.round(keys.filter(k => state[k]).length / total * 100);
+  document.querySelector('[data-bar="'+artistName+'"]').style.width = pct + '%';
+  document.querySelector('[data-pct="'+artistName+'"]').textContent = pct + '%';
+  updateOverall();
+}
+
+function render() {
+  const container = document.getElementById('tracker');
+  container.innerHTML = '';
+  data.forEach(phase => {
+    const pl = document.createElement('div');
+    pl.className = 'phase-label';
+    pl.textContent = phase.phase;
+    container.appendChild(pl);
+    phase.artists.forEach(a => {
+      const keys = a.albums.map((_, i) => a.name + '|' + i);
+      const doneCount = keys.filter(k => state[k]).length;
+      const pct = Math.round(doneCount / a.albums.length * 100);
+      const card = document.createElement('div');
+      card.className = 'artist-card';
+      card.innerHTML = `<div class="artist-header">
+        <span class="artist-name">${a.name}</span>
+        <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${phase.color}" data-bar="${a.name}"></div></div>
+        <span class="pct" data-pct="${a.name}">${pct}%</span>
+      </div>
+      <div class="albums">${a.albums.map((al,i) => {
+        const key = a.name+'|'+i, isDone = state[key], label = al.replace(' ✓','');
+        return `<div class="album-row">
+          <div class="album-check${isDone?' done':''}" data-key="${key}" onclick="toggle('${key}','${a.name}',${a.albums.length})"></div>
+          <span class="album-label${isDone?' done':''}" data-label="${key}">${label}</span>
+        </div>`;
+      }).join('')}</div>`;
+      container.appendChild(card);
+    });
+  });
+  updateOverall();
+}
+render();
+</script>
+</body>
+</html>
