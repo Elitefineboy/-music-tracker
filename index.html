@@ -35,7 +35,6 @@
 
   .container { max-width: 840px; margin: 0 auto; }
 
-  /* Premium Dashboard Header */
   header {
     background: linear-gradient(135deg, #141722 0%, #0d0f14 100%);
     border: 1px solid var(--border2);
@@ -91,7 +90,6 @@
     box-shadow: 0 0 16px rgba(59, 130, 246, 0.3);
   }
 
-  /* Stats Grid */
   .stats-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -110,7 +108,6 @@
   .stat-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text3); text-transform: uppercase; }
   .stat-val { font-size: 15px; font-weight: 700; color: #fff; margin-top: 2px; }
 
-  /* Utility Panel (Search, Add, Config) */
   .utility-panel {
     display: flex;
     gap: 12px;
@@ -156,7 +153,6 @@
   .btn-primary { background: var(--blue); border-color: transparent; color: #fff; }
   .btn-primary:hover { background: #2575c4; }
 
-  /* Daily / AI Recommendation Card */
   .rec-card {
     background: rgba(127, 119, 221, 0.08);
     border: 1px dashed rgba(127, 119, 221, 0.3);
@@ -171,7 +167,6 @@
   .rec-title { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--purple); text-transform: uppercase; letter-spacing: 0.05em; }
   .rec-body { font-size: 14px; font-weight: 500; margin-top: 4px; color: #fff; }
 
-  /* Achievements / Badges Panel */
   .badges-container {
     display: flex;
     gap: 8px;
@@ -206,7 +201,6 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   }
 
-  /* Main Dynamic Section Renderers */
   .phase-section { margin-bottom: 2.5rem; }
   .phase-label { 
     font-family: 'DM Mono', monospace; 
@@ -224,7 +218,6 @@
   
   .cards-grid { display: flex; flex-direction: column; gap: 12px; }
 
-  /* Spotify Block Design */
   .artist-card { 
     background: var(--bg2); 
     border: 1px solid var(--border); 
@@ -242,7 +235,8 @@
   .card-actions {
     margin-left: auto;
     display: flex;
-    gap: 8px;
+    align-items: center;
+    gap: 12px;
     opacity: 0;
     transition: opacity 0.2s;
   }
@@ -253,8 +247,24 @@
     color: var(--text3);
     cursor: pointer;
     font-size: 13px;
+    display: flex;
+    align-items: center;
   }
   .action-btn:hover { color: #fff; }
+  .quick-add-btn {
+    background: rgba(55,138,221,0.1);
+    border: 1px solid rgba(55,138,221,0.2);
+    color: var(--blue);
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  .quick-add-btn:hover {
+    background: var(--blue);
+    color: #fff;
+  }
 
   .albums { 
     display: grid; 
@@ -288,7 +298,6 @@
   .album-row:hover .item-delete { opacity: 1; }
   .item-delete:hover { color: var(--orange); }
 
-  /* Modals Layout */
   .modal-overlay {
     position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8);
     display: flex; align-items: center; justify-content: center; z-index: 1000; visibility: hidden; opacity: 0; transition: all 0.2s;
@@ -322,7 +331,7 @@
       <div>
         <h1>Music Completion Tracker</h1>
         <div class="overall-num" id="overall-num">0%</div>
-        <div class="overall-count" id="overall-count">0 / 0 albums</div>
+        <div class="overall-count" id="overall-count">0 / 0 items</div>
       </div>
     </div>
     <div class="bar-track">
@@ -332,7 +341,7 @@
     <div class="stats-grid">
       <div class="stat-card">
         <div class="stat-label">Top Genre Base</div>
-        <div class="stat-val" id="stat-genre">Hip-Hop</div>
+        <div class="stat-val" id="stat-genre">Hip-Hop / R&B</div>
       </div>
       <div class="stat-card">
         <div class="stat-label">Completed Artists</div>
@@ -356,7 +365,7 @@
   <div class="badges-container" id="badges-container"></div>
 
   <div class="utility-panel">
-    <input type="text" class="search-box" id="search-box" placeholder="Search artists or albums instantly..." oninput="handleSearch()">
+    <input type="text" class="search-box" id="search-box" placeholder="Search artists, albums or songs instantly..." oninput="handleSearch()">
     <button class="btn btn-primary" onclick="openModal('add-artist-modal')">➕ Add Artist</button>
     <button class="btn" onclick="exportData()">📦 Backup</button>
     <button class="btn" onclick="document.getElementById('import-file').click()">📥 Load</button>
@@ -383,8 +392,8 @@
       </select>
     </div>
     <div class="form-group">
-      <label>Albums (Comma Separated)</label>
-      <input type="text" id="new-artist-albums" class="form-input" placeholder="Album 1, Album 2, Album 3">
+      <label>Songs / Albums (Comma Separated)</label>
+      <input type="text" id="new-artist-albums" class="form-input" placeholder="Song 1, Song 2, Album 1">
     </div>
     <div class="modal-footer">
       <button class="btn" onclick="closeModal('add-artist-modal')">Cancel</button>
@@ -394,12 +403,13 @@
 </div>
 
 <script>
-// Static core configuration 
 const defaultData = [
   { phase: "Phase 1 — Finish what you started", color: "#7F77DD", artists: [
     { name: "Tyler the Creator", albums: ["Goblin", "Wolf", "Cherry Bomb", "Flower Boy ✓", "IGOR ✓", "Call Me If You Get Lost", "Chromakopia ✓", "Don't Tap the Glass"] },
     { name: "Daniel Caesar", albums: ["Freudian ✓", "Case Study 01", "Never Enough", "Son of Spergy"] },
     { name: "Lil Tecca", albums: ["We Love You Tecca", "Virgo World", "We Love You Tecca 2", "Tec", "Plan A", "Dopamine ✓"] },
+    { name: "Lil Wayne", albums: ["Tha Carter III", "Tha Carter IV", "Tha Carter V", "Aamil"] },
+    { name: "Lil Yachty", albums: ["Let's Start Here.", "Lil Boat", "Nuthin' 2 Prove"] }
   ]},
   { phase: "Phase 2 — Easy unlocks", color: "#1D9E75", artists: [
     { name: "Don Toliver", albums: ["Heaven or Hell", "Love Sick", "Life of a Don", "Hardstone Psycho", "Octane"] },
@@ -408,6 +418,8 @@ const defaultData = [
     { name: "A Boogie wit da Hoodie", albums: ["Artist", "TBA", "Hoodie SZN", "Artist 2.0", "Me vs Myself"] },
     { name: "Brent Faiyaz", albums: ["Sonder Son", "Wasteland", "Larger Than Life", "Icon ✓"] },
     { name: "Playboi Carti", albums: ["Playboi Carti", "Die Lit", "Whole Lotta Red", "MUSIC"] },
+    { name: "Steve Lacy", albums: ["Apollo XXI", "Gemini Rights"] },
+    { name: "Bryson Tiller", albums: ["T R A P S O U L", "True to Self", "Anniversary"] }
   ]},
   { phase: "Phase 3 — Level up", color: "#378ADD", artists: [
     { name: "J. Cole", albums: ["Cole World", "Born Sinner", "2014 Forest Hills Drive", "KOD", "The Off-Season", "It's a Boy", "The Fall-Off"] },
@@ -415,10 +427,15 @@ const defaultData = [
     { name: "Joey Bada$$", albums: ["1999", "B4.Da.$$", "All-Amerikkkan Bada$$", "2000", "Lonely At The Top"] },
     { name: "Kanye West", albums: ["College Dropout", "Late Registration", "Graduation", "808s", "MBDTF", "Yeezus", "TLOP", "ye", "Donda", "Vultures 1", "Vultures 2", "Bully ✓"] },
     { name: "Drake", albums: ["Thank Me Later", "Take Care", "Nothing Was The Same", "If You're Reading This", "Views", "More Life", "Scorpion", "CLB", "Honestly Nevermind", "For All The Dogs", "$ome $exy $ongs 4 U", "Iceman", "Habibti", "Maid of Honour"] },
+    { name: "21 Savage", albums: ["Issa Album", "I Am > I Was", "American Dream"] },
+    { name: "Giveon", albums: ["Take Time", "When It's All Said and Done", "Give Or Take"] },
+    { name: "ASAP Rocky", albums: ["Live. Love. A$AP", "Long. Live. A$AP", "At. Long. Last. A$AP", "Testing"] }
   ]},
   { phase: "Phase 4 — Heavy hitters", color: "#D85A30", artists: [
     { name: "Kendrick Lamar", albums: ["Section.80", "good kid m.A.A.d city", "To Pimp a Butterfly", "DAMN.", "Mr. Morale & The Big Steppers", "GNX"] },
     { name: "MF DOOM", albums: ["Operation Doomsday", "Madvillainy", "MM..FOOD", "Born Like This", "JJ DOOM"] },
+    { name: "Tory Lanez", albums: ["I Told You", "Chixtape 5", "Alone At Prom"] },
+    { name: "SZA", albums: ["Ctrl", "SOS"] }
   ]},
 ];
 
@@ -429,15 +446,14 @@ const PHASE_COLORS = {
   "Phase 4 — Heavy hitters": "#D85A30"
 };
 
-const STORAGE_DATA_KEY = 'music_tracker_data_v4';
-const STORAGE_STATE_KEY = 'music_tracker_state_v4';
-const STORAGE_STREAK_KEY = 'music_tracker_streak_v4';
+const STORAGE_DATA_KEY = 'music_tracker_data_v5';
+const STORAGE_STATE_KEY = 'music_tracker_state_v5';
+const STORAGE_STREAK_KEY = 'music_tracker_streak_v5';
 
 let workingData = [];
 let progressState = {};
 let systemStreak = 0;
 
-// Initialize System Engine
 function init() {
   if (localStorage.getItem(STORAGE_DATA_KEY)) {
     workingData = JSON.parse(localStorage.getItem(STORAGE_DATA_KEY));
@@ -449,11 +465,11 @@ function init() {
   if (localStorage.getItem(STORAGE_STATE_KEY)) {
     progressState = JSON.parse(localStorage.getItem(STORAGE_STATE_KEY));
   } else {
-    // Structural state generation
     workingData.forEach(p => {
       p.artists.forEach(a => {
-        a.albums.forEach((al, i) => {
-          const key = `${a.name}|${i}`;
+        a.albums.forEach((al) => {
+          const cleanName = al.replace(' ✓', '');
+          const key = `${a.name}|${cleanName}`;
           progressState[key] = al.endsWith(' ✓');
         });
       });
@@ -462,6 +478,7 @@ function init() {
   }
 
   systemStreak = parseInt(localStorage.getItem(STORAGE_STREAK_KEY) || "0");
+  document.getElementById('stat-streak').textContent = `${systemStreak} Days`;
   renderBadges();
   renderTracker();
   generateRecommendation();
@@ -470,7 +487,6 @@ function init() {
 function saveState() { localStorage.setItem(STORAGE_STATE_KEY, JSON.stringify(progressState)); }
 function saveStructure() { localStorage.setItem(STORAGE_DATA_KEY, JSON.stringify(workingData)); }
 
-// Modal Control Pipeline
 function openModal(id) { document.getElementById(id).classList.add('active'); }
 function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
@@ -484,7 +500,7 @@ function saveNewArtist() {
     return;
   }
 
-  const cleanedAlbums = rawAlbums.map(a => a.trim());
+  const cleanedAlbums = rawAlbums.map(a => a.trim().replace(' ✓', ''));
   let targetPhase = workingData.find(p => p.phase === phaseName);
 
   if (!targetPhase) {
@@ -492,35 +508,55 @@ function saveNewArtist() {
     workingData.push(targetPhase);
   }
 
-  const existingArtist = targetPhase.artists.find(a => a.name.toLowerCase() === name.toLowerCase());
+  let existingArtist = null;
+  for (let p of workingData) {
+    let match = p.artists.find(a => a.name.toLowerCase() === name.toLowerCase());
+    if (match) { existingArtist = match; break; }
+  }
+
   if (existingArtist) {
-    existingArtist.albums = [...existingArtist.albums, ...cleanedAlbums];
+    cleanedAlbums.forEach(item => {
+      if (!existingArtist.albums.includes(item)) {
+        existingArtist.albums.push(item);
+        progressState[`${existingArtist.name}|${item}`] = false;
+      }
+    });
   } else {
     targetPhase.artists.push({ name, albums: cleanedAlbums });
+    cleanedAlbums.forEach(item => {
+      progressState[`${name}|${item}`] = false;
+    });
   }
 
   saveStructure();
-  
-  // Re-verify current checkbox states matching additions
-  workingData.forEach(p => {
-    p.artists.forEach(a => {
-      a.albums.forEach((al, i) => {
-        const key = `${a.name}|${i}`;
-        if (progressState[key] === undefined) {
-          progressState[key] = al.endsWith(' ✓');
-        }
-      });
-    });
-  });
-  
   saveState();
   closeModal('add-artist-modal');
   
-  // Clear inputs
   document.getElementById('new-artist-name').value = '';
   document.getElementById('new-artist-albums').value = '';
   
   renderTracker();
+}
+
+function addSingleTrack(artistName) {
+  const trackName = prompt(`Enter a new song or album title to add directly to ${artistName}:`);
+  if (!trackName || trackName.trim() === "") return;
+  
+  const cleanTrack = trackName.trim();
+  const targetArtist = findArtist(artistName);
+  
+  if (targetArtist) {
+    if (targetArtist.albums.includes(cleanTrack)) {
+      alert("This track or album already exists under this artist.");
+      return;
+    }
+    targetArtist.albums.push(cleanTrack);
+    progressState[`${artistName}|${cleanTrack}`] = false;
+    
+    saveStructure();
+    saveState();
+    renderTracker();
+  }
 }
 
 function deleteArtist(artistName) {
@@ -536,19 +572,12 @@ function deleteArtist(artistName) {
   renderTracker();
 }
 
-function deleteAlbum(artistName, index) {
+function deleteAlbum(artistName, trackName) {
   const targetArtist = findArtist(artistName);
   if (!targetArtist) return;
   
-  targetArtist.albums.splice(index, 1);
-  
-  // Shift checkbox states down cleanly
-  const baseKey = artistName + '|';
-  const maxIdx = targetArtist.albums.length;
-  for (let i = index; i <= maxIdx; i++) {
-    progressState[baseKey + i] = progressState[baseKey + (i + 1)];
-  }
-  delete progressState[baseKey + maxIdx];
+  targetArtist.albums = targetArtist.albums.filter(item => item !== trackName);
+  delete progressState[`${artistName}|${trackName}`];
 
   saveStructure();
   saveState();
@@ -563,25 +592,25 @@ function findArtist(name) {
   return null;
 }
 
-window.toggle = function(key, artistName, total) {
+window.toggle = function(key, artistName) {
   progressState[key] = !progressState[key];
   saveState();
-  
-  // Manage consistency log calculations
   updateStreak();
 
-  // Trigger DOM local updates safely without complete heavy re-renders
   const checkEl = document.querySelector(`[data-key="${key.replace(/'/g, "\\'")}"]`);
   const lblEl = document.querySelector(`[data-label="${key.replace(/'/g, "\\'")}"]`);
   if (checkEl) checkEl.classList.toggle('done', progressState[key]);
   if (lblEl) lblEl.classList.toggle('done', progressState[key]);
   
-  // Recalculate component card math
-  const keys = Object.keys(progressState).filter(k => k.startsWith(artistName + '|'));
   const targetArtist = findArtist(artistName);
   if (targetArtist) {
-    const artistDone = keys.filter(k => progressState[k]).length;
-    const pct = Math.round(artistDone / targetArtist.albums.length * 100);
+    const totalTracks = targetArtist.albums.length;
+    let doneCount = 0;
+    targetArtist.albums.forEach(item => {
+      if (progressState[`${artistName}|${item}`]) doneCount++;
+    });
+    
+    const pct = totalTracks > 0 ? Math.round(doneCount / totalTracks * 100) : 0;
     const barEl = document.querySelector(`[data-bar="${artistName.replace(/'/g, "\\'")}"]`);
     const pctEl = document.querySelector(`[data-pct="${artistName.replace(/'/g, "\\'")}"]`);
     if (barEl) barEl.style.width = pct + '%';
@@ -610,9 +639,11 @@ function updateOverall() {
     p.artists.forEach(a => {
       totalArtistsCount++;
       let artistComplete = true;
-      a.albums.forEach((al, i) => {
+      if (a.albums.length === 0) artistComplete = false;
+      
+      a.albums.forEach((al) => {
         total++;
-        if (progressState[`${a.name}|${i}`]) done++;
+        if (progressState[`${a.name}|${al}`]) done++;
         else artistComplete = false;
       });
       if (artistComplete && a.albums.length > 0) fullyCompletedArtists++;
@@ -622,11 +653,10 @@ function updateOverall() {
   const pct = total > 0 ? Math.round(done / total * 100) : 0;
   document.getElementById('overall-num').textContent = pct + '%';
   document.getElementById('overall-bar').style.width = pct + '%';
-  document.getElementById('overall-count').textContent = `${done} / ${total} albums`;
+  document.getElementById('overall-count').textContent = `${done} / ${total} items`;
   document.getElementById('stat-artists').textContent = `${fullyCompletedArtists} / ${totalArtistsCount}`;
 }
 
-// Search Logic System
 function handleSearch() {
   const query = document.getElementById('search-box').value.toLowerCase().trim();
   const cards = document.querySelectorAll('.artist-card');
@@ -646,14 +676,13 @@ function handleSearch() {
   });
 }
 
-// Recommendation Engine Routine
 function generateRecommendation() {
   let uncompleted = [];
   workingData.forEach(p => {
     p.artists.forEach(a => {
-      a.albums.forEach((al, i) => {
-        if (!progressState[`${a.name}|${i}`]) {
-          uncompleted.push({ artist: a.name, album: al.replace(' ✓', '') });
+      a.albums.forEach((al) => {
+        if (!progressState[`${a.name}|${al}`]) {
+          uncompleted.push({ artist: a.name, album: al });
         }
       });
     });
@@ -661,14 +690,13 @@ function generateRecommendation() {
 
   const textEl = document.getElementById('rec-text');
   if (uncompleted.length === 0) {
-    textEl.textContent = "All locked in! You completely finished every album.";
+    textEl.textContent = "All locked in! You completely finished every track.";
   } else {
     const pick = uncompleted[Math.floor(Math.random() * uncompleted.length)];
     textEl.textContent = `Queue up "${pick.album}" by ${pick.artist}`;
   }
 }
 
-// Badges system mapping
 const badgeDefinitions = [
   { id: 'first', name: 'First Check', emoji: '💿' },
   { id: 'tyler', name: 'Tyler Complete', emoji: '🐝' },
@@ -681,34 +709,36 @@ function renderBadges() {
   const container = document.getElementById('badges-container');
   container.innerHTML = '';
   
-  // Evaluate Badge Statuses
   const unlocked = {};
   let total = 0, done = 0;
   
   workingData.forEach(p => {
     p.artists.forEach(a => {
       let artistDone = true;
-      a.albums.forEach((al, i) => {
+      if (a.albums.length === 0) artistDone = false;
+      
+      a.albums.forEach((al) => {
         total++;
-        if (progressState[`${a.name}|${i}`]) done++;
+        if (progressState[`${a.name}|${al}`]) done++;
         else artistDone = false;
       });
       if (a.name === "Tyler the Creator" && artistDone) unlocked['tyler'] = true;
       if (a.name === "Playboi Carti" && artistDone) unlocked['carti'] = true;
     });
     
-    // Evaluate entire phase status
     let phaseDone = true;
+    let hasArtists = p.artists.length > 0;
     p.artists.forEach(a => {
-      a.albums.forEach((_, i) => {
-        if (!progressState[`${a.name}|${i}`]) phaseDone = false;
+      if (a.albums.length === 0) phaseDone = false;
+      a.albums.forEach((al) => {
+        if (!progressState[`${a.name}|${al}`]) phaseDone = false;
       });
     });
-    if (p.phase.includes("Phase 1") && phaseDone) unlocked['phase1'] = true;
+    if (p.phase.includes("Phase 1") && phaseDone && hasArtists) unlocked['phase1'] = true;
   });
 
   if (done > 0) unlocked['first'] = true;
-  if (done / total >= 0.5) unlocked['half'] = true;
+  if (total > 0 && done / total >= 0.5) unlocked['half'] = true;
 
   badgeDefinitions.forEach(b => {
     const isU = unlocked[b.id];
@@ -719,7 +749,6 @@ function renderBadges() {
   });
 }
 
-// Global Backup Pipeline Operations
 function exportData() {
   const backup = { data: workingData, state: progressState };
   const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backup));
@@ -769,8 +798,10 @@ function renderTracker() {
     cardsGrid.className = 'cards-grid';
     
     phase.artists.forEach(a => {
-      const keys = a.albums.map((_, i) => `${a.name}|${i}`);
-      const doneCount = keys.filter(k => progressState[k]).length;
+      let doneCount = 0;
+      a.albums.forEach(item => {
+        if (progressState[`${a.name}|${item}`]) doneCount++;
+      });
       const pct = a.albums.length > 0 ? Math.round(doneCount / a.albums.length * 100) : 0;
       
       const card = document.createElement('div');
@@ -784,21 +815,21 @@ function renderTracker() {
           </div>
           <span class="pct" data-pct="${a.name}">${pct}%</span>
           <div class="card-actions">
+            <button class="quick-add-btn" onclick="addSingleTrack('${a.name}')">➕ Add Track</button>
             <button class="action-btn" onclick="deleteArtist('${a.name}')" title="Delete Artist">🗑️</button>
           </div>
         </div>
         <div class="albums">
-          ${a.albums.map((al, i) => {
-            const key = `${a.name}|${i}`;
+          ${a.albums.map((al) => {
+            const key = `${a.name}|${al}`;
             const isDone = progressState[key];
-            const label = al.replace(' ✓', '');
             return `
               <div class="album-row">
                 <div class="album-left">
-                  <div class="album-check ${isDone ? 'done' : ''}" data-key="${key}" onclick="toggle('${key}', '${a.name}', ${a.albums.length})"></div>
-                  <span class="album-label ${isDone ? 'done' : ''}" data-label="${key}" title="${label}">${label}</span>
+                  <div class="album-check ${isDone ? 'done' : ''}" data-key="${key}" onclick="toggle('${key}', '${a.name}')"></div>
+                  <span class="album-label ${isDone ? 'done' : ''}" data-label="${key}" title="${al}">${al}</span>
                 </div>
-                <button class="item-delete" onclick="deleteAlbum('${a.name}', ${i})">✕</button>
+                <button class="item-delete" onclick="deleteAlbum('${a.name}', '${al.replace(/'/g, "\\'")}')">✕</button>
               </div>
             `;
           }).join('')}
@@ -814,7 +845,6 @@ function renderTracker() {
   updateOverall();
 }
 
-// Entrypoint trigger invocation
 init();
 </script>
 </body>
