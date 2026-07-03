@@ -108,6 +108,52 @@
   .stat-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text3); text-transform: uppercase; }
   .stat-val { font-size: 15px; font-weight: 700; color: #fff; margin-top: 2px; }
 
+  /* New Featured Dashboard Components */
+  .current-rotation-banner {
+    background: linear-gradient(135deg, #221612 0%, #0f0a08 100%);
+    border: 1px dashed var(--orange);
+    border-radius: 14px;
+    padding: 16px 20px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 8px 24px rgba(216,90,48,0.15);
+  }
+
+  .leaderboard-section {
+    background: #0f111a;
+    border: 1px solid rgba(255, 215, 0, 0.15);
+    padding: 18px 20px;
+    border-radius: 14px;
+    margin-bottom: 2rem;
+  }
+
+  .leaderboard-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: #ffd700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+  }
+
+  .leaderboard-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px 24px;
+  }
+  @media (max-width: 640px) { .leaderboard-grid { grid-template-columns: 1fr; } }
+
+  .leaderboard-item {
+    font-size: 13px;
+    color: var(--text2);
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,0.02);
+    padding: 4px 0;
+  }
+
   .utility-panel {
     display: flex;
     gap: 12px;
@@ -158,7 +204,7 @@
     border: 1px dashed rgba(127, 119, 221, 0.3);
     border-radius: 14px;
     padding: 16px 20px;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -261,10 +307,7 @@
     cursor: pointer;
     font-weight: 500;
   }
-  .quick-add-btn:hover {
-    background: var(--blue);
-    color: #fff;
-  }
+  .quick-add-btn:hover { background: var(--blue); color: #fff; }
 
   .albums { 
     display: grid; 
@@ -293,6 +336,27 @@
     overflow: hidden; text-overflow: ellipsis; cursor: pointer;
   }
   .album-label.done { text-decoration: line-through; color: var(--text3); }
+
+  /* Utility controls for rating & spin */
+  .album-actions { display: flex; align-items: center; gap: 8px; }
+  
+  .spin-btn {
+    background: transparent; border: none; font-size: 12px; cursor: pointer; filter: grayscale(1); opacity: 0.3; transition: all 0.2s;
+  }
+  .album-row:hover .spin-btn, .spin-btn.active { opacity: 1; filter: grayscale(0); }
+
+  .rating-select {
+    background: #08090c;
+    color: var(--text2);
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    font-size: 11px;
+    padding: 2px 4px;
+    font-family: 'DM Mono', monospace;
+    cursor: pointer;
+    outline: none;
+  }
+  .rating-select:focus { border-color: var(--blue); color: #fff; }
 
   .item-delete { font-size: 11px; color: var(--text3); opacity: 0; cursor: pointer; background: transparent; border: none; }
   .album-row:hover .item-delete { opacity: 1; }
@@ -354,6 +418,10 @@
     </div>
   </header>
 
+  <div id="spinning-container"></div>
+
+  <div id="leaderboard-container"></div>
+
   <div class="rec-card" id="rec-card">
     <div>
       <div class="rec-title">🎯 Next Target Recommendation</div>
@@ -408,8 +476,14 @@ const defaultData = [
     { name: "Tyler the Creator", albums: ["Goblin", "Wolf", "Cherry Bomb", "Flower Boy ✓", "IGOR ✓", "Call Me If You Get Lost", "Chromakopia ✓", "Don't Tap the Glass"] },
     { name: "Daniel Caesar", albums: ["Freudian ✓", "Case Study 01", "Never Enough", "Son of Spergy"] },
     { name: "Lil Tecca", albums: ["We Love You Tecca", "Virgo World", "We Love You Tecca 2", "Tec", "Plan A", "Dopamine ✓"] },
-    { name: "Lil Wayne", albums: ["Tha Carter III", "Tha Carter IV", "Tha Carter V", "Aamil"] },
-    { name: "Lil Yachty", albums: ["Let's Start Here.", "Lil Boat", "Nuthin' 2 Prove"] }
+    { name: "Lil Wayne", albums: [
+      "Tha Block Is Hot (1999)", "Lights Out (2000)", "500 Degreez (2002)", "Tha Carter (2004)", 
+      "Tha Carter II (2005)", "Tha Carter III (2008)", "Rebirth (2010)", "I Am Not a Human Being (2010)", 
+      "Tha Carter IV (2011)", "I Am Not a Human Being II (2013)", "Free Weezy Album (2015)", 
+      "Tha Carter V (2018)", "Funeral (2020)", "Tha Carter VI (2025)", "Aamil"
+    ] },
+    { name: "Lil Yachty", albums: ["Lil Boat", "Nuthin' 2 Prove", "Let's Start Here.", "Bad Cameo", "Secret Recipe"] },
+    { name: "Malcolm Todd", albums: ["Sweet Boy", "Shower Rhythms", "Art House"] }
   ]},
   { phase: "Phase 2 — Easy unlocks", color: "#1D9E75", artists: [
     { name: "Don Toliver", albums: ["Heaven or Hell", "Love Sick", "Life of a Don", "Hardstone Psycho", "Octane"] },
@@ -418,8 +492,9 @@ const defaultData = [
     { name: "A Boogie wit da Hoodie", albums: ["Artist", "TBA", "Hoodie SZN", "Artist 2.0", "Me vs Myself"] },
     { name: "Brent Faiyaz", albums: ["Sonder Son", "Wasteland", "Larger Than Life", "Icon ✓"] },
     { name: "Playboi Carti", albums: ["Playboi Carti", "Die Lit", "Whole Lotta Red", "MUSIC"] },
-    { name: "Steve Lacy", albums: ["Apollo XXI", "Gemini Rights"] },
-    { name: "Bryson Tiller", albums: ["T R A P S O U L", "True to Self", "Anniversary"] }
+    { name: "Steve Lacy", albums: ["Apollo XXI", "Gemini Rights", "The Lo-Fis"] },
+    { name: "Bryson Tiller", albums: ["T R A P S O U L", "True to Self", "Anniversary", "A N N I V E R S A R Y", "Bryson Tiller"] },
+    { name: "Baby Keem", albums: ["The Sound of Bad Habit", "DIE FOR MY BITCH", "The Melodic Blue"] }
   ]},
   { phase: "Phase 3 — Level up", color: "#378ADD", artists: [
     { name: "J. Cole", albums: ["Cole World", "Born Sinner", "2014 Forest Hills Drive", "KOD", "The Off-Season", "It's a Boy", "The Fall-Off"] },
@@ -427,15 +502,17 @@ const defaultData = [
     { name: "Joey Bada$$", albums: ["1999", "B4.Da.$$", "All-Amerikkkan Bada$$", "2000", "Lonely At The Top"] },
     { name: "Kanye West", albums: ["College Dropout", "Late Registration", "Graduation", "808s", "MBDTF", "Yeezus", "TLOP", "ye", "Donda", "Vultures 1", "Vultures 2", "Bully ✓"] },
     { name: "Drake", albums: ["Thank Me Later", "Take Care", "Nothing Was The Same", "If You're Reading This", "Views", "More Life", "Scorpion", "CLB", "Honestly Nevermind", "For All The Dogs", "$ome $exy $ongs 4 U", "Iceman", "Habibti", "Maid of Honour"] },
-    { name: "21 Savage", albums: ["Issa Album", "I Am > I Was", "American Dream"] },
+    { name: "21 Savage", albums: ["The Slaughter Tape", "Issa Album", "I Am > I Was", "Savage Mode II", "American Dream"] },
     { name: "Giveon", albums: ["Take Time", "When It's All Said and Done", "Give Or Take"] },
-    { name: "ASAP Rocky", albums: ["Live. Love. A$AP", "Long. Live. A$AP", "At. Long. Last. A$AP", "Testing"] }
+    { name: "ASAP Rocky", albums: ["Live. Love. A$AP", "Long. Live. A$AP", "At. Long. Last. A$AP", "Testing", "Don't Be Dumb"] },
+    { name: "Chance the Rapper", albums: ["10 Day", "Acid Rap", "Coloring Book", "The Big Day", "Star Line Gallery"] },
+    { name: "Saba", albums: ["Bucket List Project", "CARE FOR ME", "Few Good Things"] }
   ]},
   { phase: "Phase 4 — Heavy hitters", color: "#D85A30", artists: [
     { name: "Kendrick Lamar", albums: ["Section.80", "good kid m.A.A.d city", "To Pimp a Butterfly", "DAMN.", "Mr. Morale & The Big Steppers", "GNX"] },
     { name: "MF DOOM", albums: ["Operation Doomsday", "Madvillainy", "MM..FOOD", "Born Like This", "JJ DOOM"] },
-    { name: "Tory Lanez", albums: ["I Told You", "Chixtape 5", "Alone At Prom"] },
-    { name: "SZA", albums: ["Ctrl", "SOS"] }
+    { name: "Tory Lanez", albums: ["I Told You", "Memories Don't Die", "Love Me Now?", "Chixtape 5", "Daystar", "Alone At Prom"] },
+    { name: "SZA", albums: ["Z", "Ctrl", "SOS", "LANA"] }
   ]},
 ];
 
@@ -446,13 +523,15 @@ const PHASE_COLORS = {
   "Phase 4 — Heavy hitters": "#D85A30"
 };
 
-const STORAGE_DATA_KEY = 'music_tracker_data_v5';
-const STORAGE_STATE_KEY = 'music_tracker_state_v5';
-const STORAGE_STREAK_KEY = 'music_tracker_streak_v5';
+const STORAGE_DATA_KEY = 'music_tracker_data_v6';
+const STORAGE_STATE_KEY = 'music_tracker_state_v6';
+const STORAGE_STREAK_KEY = 'music_tracker_streak_v6';
+const STORAGE_SPIN_KEY = 'music_tracker_spin_v6';
 
 let workingData = [];
-let progressState = {};
+let progressState = {}; // Format: { "Artist|Album": { completed: true/false, rating: null/1-10 } }
 let systemStreak = 0;
+let currentSpinning = null; // Key tracking format: "Artist|Album"
 
 function init() {
   if (localStorage.getItem(STORAGE_DATA_KEY)) {
@@ -462,6 +541,8 @@ function init() {
     localStorage.setItem(STORAGE_DATA_KEY, JSON.stringify(workingData));
   }
 
+  currentSpinning = localStorage.getItem(STORAGE_SPIN_KEY) || null;
+
   if (localStorage.getItem(STORAGE_STATE_KEY)) {
     progressState = JSON.parse(localStorage.getItem(STORAGE_STATE_KEY));
   } else {
@@ -470,15 +551,26 @@ function init() {
         a.albums.forEach((al) => {
           const cleanName = al.replace(' ✓', '');
           const key = `${a.name}|${cleanName}`;
-          progressState[key] = al.endsWith(' ✓');
+          progressState[key] = {
+            completed: al.endsWith(' ✓'),
+            rating: null
+          };
         });
       });
     });
+    // Strip original ' ✓' text variants inside working database array clean references
+    workingData.forEach(p => {
+      p.artists.forEach(a => {
+        a.albums = a.albums.map(al => al.replace(' ✓', ''));
+      });
+    });
+    saveStructure();
     saveState();
   }
 
   systemStreak = parseInt(localStorage.getItem(STORAGE_STREAK_KEY) || "0");
   document.getElementById('stat-streak').textContent = `${systemStreak} Days`;
+  
   renderBadges();
   renderTracker();
   generateRecommendation();
@@ -518,13 +610,13 @@ function saveNewArtist() {
     cleanedAlbums.forEach(item => {
       if (!existingArtist.albums.includes(item)) {
         existingArtist.albums.push(item);
-        progressState[`${existingArtist.name}|${item}`] = false;
+        progressState[`${existingArtist.name}|${item}`] = { completed: false, rating: null };
       }
     });
   } else {
     targetPhase.artists.push({ name, albums: cleanedAlbums });
     cleanedAlbums.forEach(item => {
-      progressState[`${name}|${item}`] = false;
+      progressState[`${name}|${item}`] = { completed: false, rating: null };
     });
   }
 
@@ -551,7 +643,7 @@ function addSingleTrack(artistName) {
       return;
     }
     targetArtist.albums.push(cleanTrack);
-    progressState[`${artistName}|${cleanTrack}`] = false;
+    progressState[`${artistName}|${cleanTrack}`] = { completed: false, rating: null };
     
     saveStructure();
     saveState();
@@ -567,6 +659,10 @@ function deleteArtist(artistName) {
   Object.keys(progressState).forEach(k => {
     if (k.startsWith(artistName + '|')) delete progressState[k];
   });
+  if (currentSpinning && currentSpinning.startsWith(artistName + '|')) {
+    currentSpinning = null;
+    localStorage.removeItem(STORAGE_SPIN_KEY);
+  }
   saveStructure();
   saveState();
   renderTracker();
@@ -577,7 +673,12 @@ function deleteAlbum(artistName, trackName) {
   if (!targetArtist) return;
   
   targetArtist.albums = targetArtist.albums.filter(item => item !== trackName);
-  delete progressState[`${artistName}|${trackName}`];
+  const key = `${artistName}|${trackName}`;
+  delete progressState[key];
+  if (currentSpinning === key) {
+    currentSpinning = null;
+    localStorage.removeItem(STORAGE_SPIN_KEY);
+  }
 
   saveStructure();
   saveState();
@@ -593,21 +694,32 @@ function findArtist(name) {
 }
 
 window.toggle = function(key, artistName) {
-  progressState[key] = !progressState[key];
+  // Graceful support handling legacy structural elements or standard configurations
+  if (typeof progressState[key] === 'boolean') {
+    progressState[key] = { completed: !progressState[key], rating: null };
+  } else {
+    progressState[key].completed = !progressState[key].completed;
+    if (!progressState[key].completed) progressState[key].rating = null; // Wipe score data if uncompleted
+  }
+
   saveState();
   updateStreak();
 
+  const isDone = progressState[key].completed;
+
   const checkEl = document.querySelector(`[data-key="${key.replace(/'/g, "\\'")}"]`);
   const lblEl = document.querySelector(`[data-label="${key.replace(/'/g, "\\'")}"]`);
-  if (checkEl) checkEl.classList.toggle('done', progressState[key]);
-  if (lblEl) lblEl.classList.toggle('done', progressState[key]);
+  if (checkEl) checkEl.classList.toggle('done', isDone);
+  if (lblEl) lblEl.classList.toggle('done', isDone);
   
   const targetArtist = findArtist(artistName);
   if (targetArtist) {
     const totalTracks = targetArtist.albums.length;
     let doneCount = 0;
     targetArtist.albums.forEach(item => {
-      if (progressState[`${artistName}|${item}`]) doneCount++;
+      const stateObj = progressState[`${artistName}|${item}`];
+      const stateDone = stateObj && typeof stateObj === 'object' ? stateObj.completed : stateObj;
+      if (stateDone) doneCount++;
     });
     
     const pct = totalTracks > 0 ? Math.round(doneCount / totalTracks * 100) : 0;
@@ -619,6 +731,95 @@ window.toggle = function(key, artistName) {
   
   updateOverall();
   renderBadges();
+  renderLeaderboard();
+}
+
+function updateRating(key, ratingValue) {
+  if (progressState[key] && typeof progressState[key] === 'object') {
+    progressState[key].rating = ratingValue === "" ? null : parseInt(ratingValue);
+    saveState();
+    renderLeaderboard();
+  }
+}
+
+function toggleSpin(key) {
+  if (currentSpinning === key) {
+    currentSpinning = null;
+    localStorage.removeItem(STORAGE_SPIN_KEY);
+  } else {
+    currentSpinning = key;
+    localStorage.setItem(STORAGE_SPIN_KEY, key);
+  }
+  renderSpinningBanner();
+  
+  // Re-render target icon indicators manually
+  document.querySelectorAll('.spin-btn').forEach(btn => {
+    const bKey = btn.getAttribute('data-spin-key');
+    if (bKey === currentSpinning) {
+      btn.classList.add('active');
+      btn.innerHTML = '📌';
+    } else {
+      btn.classList.remove('active');
+      btn.innerHTML = '📌';
+    }
+  });
+}
+
+function renderSpinningBanner() {
+  const container = document.getElementById('spinning-container');
+  if (!container) return;
+  container.innerHTML = '';
+
+  if (currentSpinning && progressState[currentSpinning]) {
+    const [artist, album] = currentSpinning.split('|');
+    const html = `
+      <div class="current-rotation-banner">
+        <div>
+          <div class="rec-title" style="color: var(--orange)">🔥 Currently Spinning</div>
+          <div class="rec-body">${album} <span style="color: var(--text2); font-size: 13px;">by ${artist}</span></div>
+        </div>
+        <button class="btn" style="padding: 6px 12px; font-size:12px; border-color: rgba(218,90,48,0.3)" onclick="toggleSpin('${currentSpinning.replace(/'/g, "\\'")}')">Remove</button>
+      </div>
+    `;
+    container.innerHTML = html;
+  }
+}
+
+function renderLeaderboard() {
+  const container = document.getElementById('leaderboard-container');
+  if (!container) return;
+  container.innerHTML = '';
+
+  let ratedItems = [];
+  Object.keys(progressState).forEach(key => {
+    const item = progressState[key];
+    if (item && typeof item === 'object' && item.completed && item.rating !== null) {
+      const [artist, album] = key.split('|');
+      ratedItems.push({ key, artist, album, rating: item.rating });
+    }
+  });
+
+  // Sort descending by numeric assignment score value
+  ratedItems.sort((a, b) => b.rating - a.rating);
+  let top10 = ratedItems.slice(0, 10);
+
+  if (top10.length > 0) {
+    let html = `
+      <div class="leaderboard-section">
+        <div class="leaderboard-title">🏆 Top Masterpieces Leaderboard</div>
+        <div class="leaderboard-grid">
+    `;
+    top10.forEach((item, index) => {
+      html += `
+        <div class="leaderboard-item">
+          <span>${index + 1}. <strong>${item.album}</strong> <span style="color: var(--text3)">(${item.artist})</span></span>
+          <span style="color: #ffd700; font-family: 'DM Mono', monospace;">${item.rating}/10</span>
+        </div>
+      `;
+    });
+    html += `</div></div>`;
+    container.innerHTML = html;
+  }
 }
 
 function updateStreak() {
@@ -643,7 +844,9 @@ function updateOverall() {
       
       a.albums.forEach((al) => {
         total++;
-        if (progressState[`${a.name}|${al}`]) done++;
+        const stateObj = progressState[`${a.name}|${al}`];
+        const stateDone = stateObj && typeof stateObj === 'object' ? stateObj.completed : stateObj;
+        if (stateDone) done++;
         else artistComplete = false;
       });
       if (artistComplete && a.albums.length > 0) fullyCompletedArtists++;
@@ -681,7 +884,9 @@ function generateRecommendation() {
   workingData.forEach(p => {
     p.artists.forEach(a => {
       a.albums.forEach((al) => {
-        if (!progressState[`${a.name}|${al}`]) {
+        const stateObj = progressState[`${a.name}|${al}`];
+        const stateDone = stateObj && typeof stateObj === 'object' ? stateObj.completed : stateObj;
+        if (!stateDone) {
           uncompleted.push({ artist: a.name, album: al });
         }
       });
@@ -719,7 +924,9 @@ function renderBadges() {
       
       a.albums.forEach((al) => {
         total++;
-        if (progressState[`${a.name}|${al}`]) done++;
+        const stateObj = progressState[`${a.name}|${al}`];
+        const stateDone = stateObj && typeof stateObj === 'object' ? stateObj.completed : stateObj;
+        if (stateDone) done++;
         else artistDone = false;
       });
       if (a.name === "Tyler the Creator" && artistDone) unlocked['tyler'] = true;
@@ -731,7 +938,9 @@ function renderBadges() {
     p.artists.forEach(a => {
       if (a.albums.length === 0) phaseDone = false;
       a.albums.forEach((al) => {
-        if (!progressState[`${a.name}|${al}`]) phaseDone = false;
+        const stateObj = progressState[`${a.name}|${al}`];
+        const stateDone = stateObj && typeof stateObj === 'object' ? stateObj.completed : stateObj;
+        if (!stateDone) phaseDone = false;
       });
     });
     if (p.phase.includes("Phase 1") && phaseDone && hasArtists) unlocked['phase1'] = true;
@@ -772,6 +981,8 @@ function importData(e) {
         saveState();
         renderTracker();
         renderBadges();
+        renderSpinningBanner();
+        renderLeaderboard();
         alert("Data successfully restored!");
       }
     } catch(err) { alert("Invalid backup structure file."); }
@@ -800,13 +1011,48 @@ function renderTracker() {
     phase.artists.forEach(a => {
       let doneCount = 0;
       a.albums.forEach(item => {
-        if (progressState[`${a.name}|${item}`]) doneCount++;
+        const stateObj = progressState[`${a.name}|${item}`];
+        const stateDone = stateObj && typeof stateObj === 'object' ? stateObj.completed : stateObj;
+        if (stateDone) doneCount++;
       });
       const pct = a.albums.length > 0 ? Math.round(doneCount / a.albums.length * 100) : 0;
       
       const card = document.createElement('div');
       card.className = 'artist-card';
       card.setAttribute('data-name', a.name);
+      
+      let albumsGridHtml = a.albums.map((al) => {
+        const key = `${a.name}|${al}`;
+        const stateObj = progressState[key];
+        
+        // Handle object translation check fallback parsing layers
+        const isDone = stateObj && typeof stateObj === 'object' ? stateObj.completed : stateObj;
+        const currentRating = stateObj && typeof stateObj === 'object' && typeof stateObj.rating === 'number' ? stateObj.rating : null;
+        const isPinned = currentSpinning === key;
+
+        return `
+          <div class="album-row">
+            <div class="album-left">
+              <div class="album-check ${isDone ? 'done' : ''}" data-key="${key}" onclick="toggle('${key}', '${a.name}')"></div>
+              <span class="album-label ${isDone ? 'done' : ''}" data-label="${key}" title="${al}">${al}</span>
+            </div>
+            <div class="album-actions">
+              <button class="spin-btn ${isPinned ? 'active' : ''}" data-spin-key="${key}" onclick="toggleSpin('${key.replace(/'/g, "\\'")}')" title="Pin to Current Rotation">📌</button>
+              ${isDone ? `
+                <select class="rating-select" onchange="updateRating('${key.replace(/'/g, "\\'")}', this.value)">
+                  <option value="">${currentRating !== null ? currentRating + '/10' : '⭐ Rating'}</option>
+                  ${Array.from({length: 10}, (_, i) => i + 1).map(num => `
+                    <option value="${num}" ${currentRating === num ? 'selected' : ''}>${num}/10</option>
+                  `).join('')}
+                  ${currentRating !== null ? `<option value="">Reset</option>` : ''}
+                </select>
+              ` : ''}
+              <button class="item-delete" onclick="deleteAlbum('${a.name}', '${al.replace(/'/g, "\\'")}')">✕</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
       card.innerHTML = `
         <div class="artist-header">
           <span class="artist-name">${a.name}</span>
@@ -820,19 +1066,7 @@ function renderTracker() {
           </div>
         </div>
         <div class="albums">
-          ${a.albums.map((al) => {
-            const key = `${a.name}|${al}`;
-            const isDone = progressState[key];
-            return `
-              <div class="album-row">
-                <div class="album-left">
-                  <div class="album-check ${isDone ? 'done' : ''}" data-key="${key}" onclick="toggle('${key}', '${a.name}')"></div>
-                  <span class="album-label ${isDone ? 'done' : ''}" data-label="${key}" title="${al}">${al}</span>
-                </div>
-                <button class="item-delete" onclick="deleteAlbum('${a.name}', '${al.replace(/'/g, "\\'")}')">✕</button>
-              </div>
-            `;
-          }).join('')}
+          ${albumsGridHtml}
         </div>
       `;
       cardsGrid.appendChild(card);
@@ -843,6 +1077,8 @@ function renderTracker() {
   });
   
   updateOverall();
+  renderSpinningBanner();
+  renderLeaderboard();
 }
 
 init();
