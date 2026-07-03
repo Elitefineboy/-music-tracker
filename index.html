@@ -4,23 +4,25 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Music Tracker Premium</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   
   :root {
-    --bg: #08090c; 
-    --bg2: #111318;
-    --card-bg: #161922;
-    --border: rgba(255, 255, 255, 0.05); 
-    --border2: rgba(255, 255, 255, 0.12);
+    --bg: #050608; 
+    --bg2: #0b0d13;
+    --card-bg: #111420;
+    --border: rgba(255, 255, 255, 0.04); 
+    --border2: rgba(255, 255, 255, 0.1);
     --text: #f3f4f6; 
-    --text2: #a0aec0; 
-    --text3: #4a5568;
-    --purple: #7F77DD;
-    --green: #1D9E75;
-    --blue: #378ADD;
-    --orange: #D85A30;
+    --text2: #94a3b8; 
+    --text3: #475569;
+    --purple: #8b5cf6;
+    --green: #10b981;
+    --blue: #3b82f6;
+    --orange: #f97316;
+    --red: #ef4444;
+    --gold: #f59e0b;
     --success: #10b981; 
   }
 
@@ -33,15 +35,24 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  .container { max-width: 840px; margin: 0 auto; }
+  .container { max-width: 900px; margin: 0 auto; }
 
   header {
-    background: linear-gradient(135deg, #141722 0%, #0d0f14 100%);
-    border: 1px solid var(--border2);
-    border-radius: 20px;
-    padding: 24px;
+    background: linear-gradient(145deg, #0f121d 0%, #07090e 100%);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 24px;
+    padding: 32px;
     margin-bottom: 2rem;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
   }
 
   .header-main {
@@ -50,107 +61,127 @@
     align-items: flex-start;
     flex-wrap: wrap;
     gap: 16px;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
   }
 
   h1 { 
     font-family: 'DM Mono', monospace; 
-    font-size: 14px; 
-    font-weight: 500; 
-    color: var(--text2); 
-    letter-spacing: 0.15em; 
+    font-size: 11px; 
+    font-weight: 700; 
+    color: var(--blue); 
+    letter-spacing: 0.2em; 
     text-transform: uppercase; 
+    margin-bottom: 6px;
   }
 
   .overall-num { 
     font-family: 'DM Mono', monospace; 
-    font-size: 42px; 
+    font-size: 56px; 
     font-weight: 700; 
     color: #fff; 
     line-height: 1;
+    text-shadow: 0 0 30px rgba(59, 130, 246, 0.2);
   }
 
-  .overall-count { font-size: 13px; color: var(--text2); margin-top: 6px; }
+  .overall-count { font-size: 13px; color: var(--text2); margin-top: 8px; font-family: 'DM Mono', monospace; }
 
   .bar-track { 
     width: 100%;
-    height: 8px; 
-    background: rgba(255,255,255,0.06); 
-    border-radius: 10px; 
+    height: 10px; 
+    background: rgba(255,255,255,0.04); 
+    border-radius: 99px; 
     overflow: hidden; 
-    margin-bottom: 20px;
+    margin-bottom: 24px;
+    border: 1px solid rgba(255,255,255,0.02);
   }
 
   .bar-fill { 
     height: 100%; 
-    border-radius: 10px; 
-    background: linear-gradient(90deg, var(--blue), #60a5fa);
+    border-radius: 99px; 
+    background: linear-gradient(90deg, var(--blue), #a855f7);
     width: 0%;
     transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); 
-    box-shadow: 0 0 16px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
   }
 
   .stats-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
+    gap: 16px;
     border-top: 1px solid var(--border);
-    padding-top: 16px;
+    padding-top: 20px;
   }
 
   .stat-card {
-    background: rgba(255,255,255,0.02);
-    padding: 10px 14px;
-    border-radius: 10px;
+    background: rgba(255,255,255,0.01);
+    padding: 12px 16px;
+    border-radius: 12px;
     border: 1px solid var(--border);
   }
 
-  .stat-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text3); text-transform: uppercase; }
-  .stat-val { font-size: 15px; font-weight: 700; color: #fff; margin-top: 2px; }
+  .stat-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; }
+  .stat-val { font-size: 16px; font-weight: 700; color: #fff; margin-top: 4px; }
 
-  .current-rotation-banner {
-    background: linear-gradient(135deg, #221612 0%, #0f0a08 100%);
-    border: 1px dashed var(--orange);
-    border-radius: 14px;
-    padding: 16px 20px;
-    margin-bottom: 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 8px 24px rgba(216,90,48,0.15);
-  }
-
-  .leaderboard-section {
-    background: #0f111a;
-    border: 1px solid rgba(255, 215, 0, 0.15);
-    padding: 18px 20px;
-    border-radius: 14px;
+  .leaderboards-wrapper {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
     margin-bottom: 2rem;
   }
+  @media (max-width: 768px) { .leaderboards-wrapper { grid-template-columns: 1fr; } }
+
+  .leaderboard-section {
+    background: #090b11;
+    border: 1px solid var(--border);
+    padding: 20px;
+    border-radius: 16px;
+  }
+
+  .leaderboard-section.gold-tier { border-color: rgba(245, 158, 11, 0.2); background: linear-gradient(185deg, #0d0e15 0%, #06070a 100%); }
+  .leaderboard-section.trash-tier { border-color: rgba(239, 68, 68, 0.15); background: linear-gradient(185deg, #0e0a0a 0%, #060505 100%); }
 
   .leaderboard-title {
     font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    color: #ffd700;
+    font-size: 11px;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 12px;
+    letter-spacing: 0.08em;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
+  .gold-tier .leaderboard-title { color: var(--gold); }
+  .trash-tier .leaderboard-title { color: var(--red); }
 
   .leaderboard-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
   }
-  @media (max-width: 640px) { .leaderboard-grid { grid-template-columns: 1fr; } }
 
   .leaderboard-item {
     font-size: 13px;
     color: var(--text2);
     display: flex;
     justify-content: space-between;
-    border-bottom: 1px solid rgba(255,255,255,0.02);
-    padding: 4px 0;
+    align-items: center;
+    background: rgba(255,255,255,0.01);
+    border: 1px solid rgba(255,255,255,0.02);
+    border-radius: 8px;
+    padding: 6px 10px;
+  }
+
+  .current-rotation-banner {
+    background: linear-gradient(135deg, #1c100b 0%, #080504 100%);
+    border: 1px dashed var(--orange);
+    border-radius: 16px;
+    padding: 16px 24px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 8px 32px rgba(249,115,22,0.1);
   }
 
   .utility-panel {
@@ -162,133 +193,142 @@
 
   .search-box {
     flex: 1;
-    min-width: 200px;
+    min-width: 240px;
     background: var(--bg2);
     border: 1px solid var(--border2);
-    border-radius: 10px;
-    padding: 10px 16px;
+    border-radius: 12px;
+    padding: 12px 18px;
     color: #fff;
     font-family: inherit;
     font-size: 14px;
     transition: all 0.2s;
   }
-
-  .search-box:focus {
-    outline: none;
-    border-color: var(--blue);
-    box-shadow: 0 0 0 3px rgba(55,138,221,0.15);
-  }
+  .search-box:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
 
   .btn {
     background: var(--bg2);
     border: 1px solid var(--border2);
     color: var(--text);
-    padding: 10px 16px;
-    border-radius: 10px;
+    padding: 12px 18px;
+    border-radius: 12px;
     cursor: pointer;
     font-weight: 500;
     font-size: 13px;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     transition: all 0.2s;
   }
-
-  .btn:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.3); }
-  .btn-primary { background: var(--blue); border-color: transparent; color: #fff; }
-  .btn-primary:hover { background: #2575c4; }
+  .btn:hover { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.2); }
+  .btn-primary { background: var(--blue); border-color: transparent; color: #fff; font-weight: 700; }
+  .btn-primary:hover { background: #2563eb; }
 
   .rec-card {
-    background: rgba(127, 119, 221, 0.08);
-    border: 1px dashed rgba(127, 119, 221, 0.3);
-    border-radius: 14px;
-    padding: 16px 20px;
+    background: rgba(139, 92, 246, 0.05);
+    border: 1px dashed rgba(139, 92, 246, 0.25);
+    border-radius: 16px;
+    padding: 18px 24px;
     margin-bottom: 1.5rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 16px;
   }
-  .rec-title { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--purple); text-transform: uppercase; letter-spacing: 0.05em; }
+  .rec-title { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--purple); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; }
   .rec-body { font-size: 14px; font-weight: 500; margin-top: 4px; color: #fff; }
 
+  .badge-headline {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    letter-spacing: 0.1em;
+  }
+
   .badges-container {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 2rem;
-    background: var(--bg2);
-    padding: 12px;
-    border-radius: 12px;
-    border: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 10px;
+    margin-bottom: 2.5rem;
   }
 
   .badge {
-    font-size: 12px;
-    font-weight: 500;
-    padding: 6px 12px;
-    border-radius: 20px;
-    background: #1a1d26;
-    border: 1px solid var(--border);
-    color: var(--text3);
+    background: #0a0c14;
+    border: 1px solid rgba(255,255,255,0.02);
+    padding: 12px;
+    border-radius: 14px;
     display: flex;
-    align-items: center;
-    gap: 6px;
-    opacity: 0.3;
-    transition: all 0.3s ease;
+    flex-direction: column;
+    gap: 4px;
+    position: relative;
+    overflow: hidden;
+    filter: grayscale(1);
+    opacity: 0.25;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .badge.unlocked {
+    filter: grayscale(0);
     opacity: 1;
-    color: #fff;
-    background: linear-gradient(135deg, #1e2538 0%, #121622 100%);
-    border-color: rgba(255,255,255,0.15);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    background: linear-gradient(145deg, #111524 0%, #0a0c14 100%);
+    border-color: rgba(255,255,255,0.08);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
   }
+  
+  .badge.unlocked::before {
+    content: ''; position: absolute; top:0; left:0; width: 4px; height: 100%; background: var(--blue);
+  }
+  .badge.unlocked.gold-badge::before { background: var(--gold); }
+  .badge.unlocked.purple-badge::before { background: var(--purple); }
 
-  .phase-section { margin-bottom: 2.5rem; }
+  .badge-icon { font-size: 18px; margin-bottom: 2px; }
+  .badge-name { font-size: 12px; font-weight: 700; color: #fff; }
+  .badge-desc { font-size: 10px; color: var(--text2); line-height: 1.3; }
+
+  .phase-section { margin-bottom: 3rem; }
   .phase-label { 
     font-family: 'DM Mono', monospace; 
-    font-size: 11px; 
-    font-weight: 500; 
-    color: var(--text2); 
-    letter-spacing: 0.1em; 
+    font-size: 12px; 
+    font-weight: 700; 
+    color: var(--text); 
+    letter-spacing: 0.05em; 
     text-transform: uppercase; 
-    margin-bottom: 12px;
+    margin-bottom: 16px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
   }
-  .phase-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .phase-label::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.05); }
   
-  .cards-grid { display: flex; flex-direction: column; gap: 12px; }
+  .cards-grid { display: flex; flex-direction: column; gap: 14px; }
 
   .artist-card { 
     background: var(--bg2); 
     border: 1px solid var(--border); 
-    border-radius: 14px; 
-    padding: 18px 20px; 
+    border-radius: 18px; 
+    padding: 20px 24px; 
     position: relative;
-    transition: all 0.25s ease; 
+    transition: all 0.2s ease; 
   }
-  .artist-card:hover { border-color: rgba(255,255,255,0.15); }
+  .artist-card:hover { border-color: rgba(255,255,255,0.1); background: #0e111a; }
 
-  .artist-header { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
-  .artist-name { font-size: 15px; font-weight: 700; color: #fff; min-width: 160px; }
+  .artist-header { display: flex; align-items: center; gap: 16px; margin-bottom: 18px; flex-wrap: wrap; }
+  .artist-name { font-size: 16px; font-weight: 700; color: #fff; min-width: 150px; }
   
   .artist-progress-bar-container {
     flex: 1;
-    height: 4px;
+    height: 6px;
     background: rgba(255,255,255,0.03);
-    border-radius: 4px;
+    border-radius: 99px;
     overflow: hidden;
-    max-width: 200px;
+    max-width: 180px;
   }
   .artist-progress-bar-fill {
     height: 100%;
     background: var(--blue);
     width: 0%;
-    transition: width 0.3s ease;
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .pct { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text2); min-width: 40px; text-align: right; }
@@ -297,49 +337,34 @@
     margin-left: auto;
     display: flex;
     align-items: center;
-    gap: 12px;
-    opacity: 0;
-    transition: opacity 0.2s;
+    gap: 10px;
   }
-  .artist-card:hover .card-actions { opacity: 1; }
   .action-btn {
-    background: transparent;
-    border: none;
-    color: var(--text3);
-    cursor: pointer;
-    font-size: 13px;
-    display: flex;
-    align-items: center;
+    background: transparent; border: none; color: var(--text3); cursor: pointer; font-size: 12px; display: flex; align-items: center; transition: color 0.2s;
   }
-  .action-btn:hover { color: #fff; }
-  .quick-add-btn {
-    background: rgba(55,138,221,0.1);
-    border: 1px solid rgba(55,138,221,0.2);
-    color: var(--blue);
-    padding: 4px 8px;
-    border-radius: 6px;
-    font-size: 11px;
-    cursor: pointer;
-    font-weight: 500;
+  .action-btn:hover { color: var(--orange); }
+  
+  .compact-btn {
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--text2); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 500; cursor: pointer; transition: all 0.2s;
   }
-  .quick-add-btn:hover { background: var(--blue); color: #fff; }
+  .compact-btn:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.15); color: #fff; }
 
   .albums { 
     display: grid; 
     grid-template-columns: repeat(2, 1fr); 
-    gap: 8px 16px; 
+    gap: 8px 20px; 
     border-top: 1px solid rgba(255,255,255,0.03);
-    padding-top: 14px;
+    padding-top: 16px;
   }
 
-  .album-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 4px 0; }
-  .album-left { display: flex; align-items: center; gap: 12px; flex: 1; overflow: hidden; }
+  .album-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 6px 0; border-radius: 6px; }
+  .album-left { display: flex; align-items: center; gap: 10px; flex: 1; overflow: hidden; }
 
   .album-check { 
-    width: 18px; height: 18px; border-radius: 6px; border: 2px solid var(--border2); 
+    width: 20px; height: 20px; border-radius: 6px; border: 2px solid var(--border2); 
     cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s; 
   }
-  .album-check:hover { border-color: rgba(255,255,255,0.4); }
+  .album-check:hover { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.02); }
   .album-check.done { background: var(--success); border-color: var(--success); animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
   .album-check.done::after { 
     content: ''; display: block; width: 4px; height: 8px; border: 2px solid #fff; 
@@ -347,7 +372,7 @@
   }
 
   .album-label { 
-    font-size: 13px; font-weight: 500; color: var(--text2); white-space: nowrap;
+    font-size: 13px; font-weight: 500; color: var(--text); white-space: nowrap;
     overflow: hidden; text-overflow: ellipsis; cursor: pointer;
   }
   .album-label.done { text-decoration: line-through; color: var(--text3); }
@@ -355,49 +380,71 @@
   .album-actions { display: flex; align-items: center; gap: 8px; }
   
   .spin-btn {
-    background: transparent; border: none; font-size: 12px; cursor: pointer; filter: grayscale(1); opacity: 0.3; transition: all 0.2s;
+    background: transparent; border: none; font-size: 12px; cursor: pointer; filter: grayscale(1); opacity: 0.2; transition: all 0.2s;
   }
   .album-row:hover .spin-btn, .spin-btn.active { opacity: 1; filter: grayscale(0); }
 
   .rating-select {
-    background: #08090c;
+    background: #050608;
     color: var(--text2);
     border: 1px solid var(--border2);
-    border-radius: 4px;
+    border-radius: 6px;
     font-size: 11px;
-    padding: 2px 4px;
+    padding: 3px 6px;
     font-family: 'DM Mono', monospace;
     cursor: pointer;
     outline: none;
   }
   .rating-select:focus { border-color: var(--blue); color: #fff; }
 
-  .item-delete { font-size: 11px; color: var(--text3); opacity: 0; cursor: pointer; background: transparent; border: none; }
+  .item-delete { font-size: 11px; color: var(--text3); opacity: 0; cursor: pointer; background: transparent; border: none; transition: opacity 0.2s, color 0.2s; }
   .album-row:hover .item-delete { opacity: 1; }
-  .item-delete:hover { color: var(--orange); }
+  .item-delete:hover { color: var(--red); }
 
   .modal-overlay {
-    position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8);
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85);
     display: flex; align-items: center; justify-content: center; z-index: 1000; visibility: hidden; opacity: 0; transition: all 0.2s;
+    backdrop-filter: blur(4px);
   }
   .modal-overlay.active { visibility: visible; opacity: 1; }
-  .modal { background: var(--card-bg); border: 1px solid var(--border2); border-radius: 16px; padding: 24px; width: 100%; max-width: 440px; }
-  .modal-title { font-size: 16px; font-weight: 700; margin-bottom: 16px; }
-  .form-group { margin-bottom: 14px; }
-  .form-group label { display: block; font-size: 11px; font-family: 'DM Mono', monospace; text-transform: uppercase; color: var(--text2); margin-bottom: 6px; }
-  .form-input { width: 100%; background: var(--bg); border: 1px solid var(--border2); border-radius: 8px; padding: 10px; color: #fff; font-family: inherit; }
-  .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+  .modal { background: var(--card-bg); border: 1px solid var(--border2); border-radius: 20px; padding: 28px; width: 100%; max-width: 440px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+  .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 18px; color: #fff; }
+  .form-group { margin-bottom: 16px; }
+  .form-group label { display: block; font-size: 11px; font-family: 'DM Mono', monospace; text-transform: uppercase; color: var(--text2); margin-bottom: 6px; letter-spacing: 0.05em; }
+  .form-input { width: 100%; background: var(--bg); border: 1px solid var(--border2); border-radius: 8px; padding: 12px; color: #fff; font-family: inherit; font-size: 14px; }
+  .form-input:focus { outline: none; border-color: var(--blue); }
+  .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
+
+  .rating-popup-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .rate-bubble {
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    color: var(--text2);
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    cursor: pointer;
+    font-weight: 700;
+  }
+  .rate-bubble:hover { border-color: var(--blue); color: #fff; }
 
   @keyframes pop {
-    0% { transform: scale(0.7); }
+    0% { transform: scale(0.8); }
     100% { transform: scale(1); }
   }
 
   @media (max-width: 640px) {
     .albums { grid-template-columns: 1fr; gap: 6px; }
-    .stats-grid { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: 1fr; gap: 8px; }
     .artist-header { flex-wrap: wrap; gap: 8px; }
-    .card-actions { order: -1; margin-left: auto; }
+    .card-actions { order: -1; margin-left: auto; width: 100%; display: flex; justify-content: flex-end; margin-bottom: 6px; }
   }
 </style>
 </head>
@@ -433,7 +480,11 @@
   </header>
 
   <div id="spinning-container"></div>
-  <div id="leaderboard-container"></div>
+  
+  <div class="leaderboards-wrapper">
+    <div id="leaderboard-container"></div>
+    <div id="flop-leaderboard-container"></div>
+  </div>
 
   <div class="rec-card" id="rec-card">
     <div>
@@ -443,10 +494,13 @@
     <button class="btn" style="padding: 6px 12px; font-size:12px;" onclick="generateRecommendation()">🎲 Shuffle</button>
   </div>
 
-  <div class="badges-container" id="badges-container"></div>
+  <div>
+    <div class="badge-headline">System Milestones & Achievements</div>
+    <div class="badges-container" id="badges-container"></div>
+  </div>
 
   <div class="utility-panel">
-    <input type="text" class="search-box" id="search-box" placeholder="Search artists, albums or songs instantly..." oninput="handleSearch()">
+    <input type="text" class="search-box" id="search-box" placeholder="Search artists or items instantly..." oninput="handleSearch()">
     <button class="btn btn-primary" onclick="openModal('add-artist-modal')">➕ Add Artist</button>
     <button class="btn" onclick="exportData()">📦 Backup</button>
     <button class="btn" onclick="document.getElementById('import-file').click()">📥 Load</button>
@@ -483,12 +537,34 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="rating-popup-modal">
+  <div class="modal">
+    <div class="modal-title" style="margin-bottom:6px;">Rate Completed Item</div>
+    <p id="rating-popup-subtitle" style="font-size:13px; color:var(--text2); margin-bottom:16px;"></p>
+    <div class="rating-popup-grid">
+      <div class="rate-bubble" onclick="submitPopupRating(1)">1</div>
+      <div class="rate-bubble" onclick="submitPopupRating(2)">2</div>
+      <div class="rate-bubble" onclick="submitPopupRating(3)">3</div>
+      <div class="rate-bubble" onclick="submitPopupRating(4)">4</div>
+      <div class="rate-bubble" onclick="submitPopupRating(5)">5</div>
+      <div class="rate-bubble" onclick="submitPopupRating(6)">6</div>
+      <div class="rate-bubble" onclick="submitPopupRating(7)">7</div>
+      <div class="rate-bubble" onclick="submitPopupRating(8)">8</div>
+      <div class="rate-bubble" onclick="submitPopupRating(9)">9</div>
+      <div class="rate-bubble" style="color:var(--gold); border-color:rgba(245,158,11,0.3);" onclick="submitPopupRating(10)">10</div>
+    </div>
+    <div class="modal-footer" style="margin-top:16px;">
+      <button class="btn" style="width:100%; justify-content:center;" onclick="closeModal('rating-popup-modal')">Skip Rating</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const defaultData = [
   { phase: "Phase 1 — Finish what you started", color: "#7F77DD", artists: [
-    { name: "Tyler the Creator", albums: ["Goblin", "Wolf", "Cherry Bomb", "Flower Boy ✓", "IGOR ✓", "Call Me If You Get Lost", "Chromakopia ✓", "Don't Tap the Glass"] },
-    { name: "Daniel Caesar", albums: ["Freudian ✓", "Case Study 01", "Never Enough", "Son of Spergy"] },
-    { name: "Lil Tecca", albums: ["We Love You Tecca", "Virgo World", "We Love You Tecca 2", "Tec", "Plan A", "Dopamine ✓"] },
+    { name: "Tyler the Creator", albums: ["Goblin", "Wolf", "Cherry Bomb", "Flower Boy", "IGOR", "Call Me If You Get Lost", "Chromakopia", "Don't Tap the Glass"] },
+    { name: "Daniel Caesar", albums: ["Freudian", "Case Study 01", "Never Enough", "Son of Spergy"] },
+    { name: "Lil Tecca", albums: ["We Love You Tecca", "Virgo World", "We Love You Tecca 2", "Tec", "Plan A", "Dopamine"] },
     { name: "Lil Yachty", albums: ["Lil Boat", "Nuthin' 2 Prove", "Let's Start Here.", "Bad Cameo", "Secret Recipe"] },
     { name: "Malcolm Todd", albums: ["Sweet Boy", "Shower Rhythms", "Art House"] }
   ]},
@@ -497,7 +573,7 @@ const defaultData = [
     { name: "Frank Ocean", albums: ["Nostalgia Ultra", "Channel Orange", "Blonde"] },
     { name: "Mac Miller", albums: ["Blue Slide Park", "Watching Movies", "GO:OD AM", "The Divine Feminine", "Swimming", "Circles"] },
     { name: "A Boogie wit da Hoodie", albums: ["Artist", "TBA", "Hoodie SZN", "Artist 2.0", "Me vs Myself"] },
-    { name: "Brent Faiyaz", albums: ["Sonder Son", "Wasteland", "Larger Than Life", "Icon ✓"] },
+    { name: "Brent Faiyaz", albums: ["Sonder Son", "Wasteland", "Larger Than Life", "Icon"] },
     { name: "Playboi Carti", albums: ["Playboi Carti", "Die Lit", "Whole Lotta Red", "MUSIC"] },
     { name: "Steve Lacy", albums: ["Apollo XXI", "Gemini Rights", "The Lo-Fis"] },
     { name: "Bryson Tiller", albums: ["T R A P S O U L", "True to Self", "Anniversary", "A N N I V E R S A R Y", "Bryson Tiller"] },
@@ -505,10 +581,10 @@ const defaultData = [
   ]},
   { phase: "Phase 3 — Level up", color: "#378ADD", artists: [
     { name: "Isaiah Rashad", albums: ["Cilvia Demo", "The Sun's Tirade", "The House Is Burning", "It's Been Awful"] },
-    { name: "J. Cole", albums: ["Cole World", "Born Sinner", "2014 Forest Hills Drive", "KOD", "The Off-Season", "It's a Boy", "The Fall-Off"] },
+    { name: "J. Cole", albums: ["Cole World", "Born Sinner", "2014 Forest Hills Drive", "KOD", "The Off-Season", "The It's a Boy", "The Fall-Off"] },
     { name: "Tame Impala", albums: ["Innerspeaker", "Lonerism", "Currents", "The Slow Rush"] },
     { name: "Joey Bada$$", albums: ["1999", "B4.Da.$$", "All-Amerikkkan Bada$$", "2000", "Lonely At The Top"] },
-    { name: "Kanye West", albums: ["College Dropout", "Late Registration", "Graduation", "808s", "MBDTF", "Yeezus", "TLOP", "ye", "Donda", "Vultures 1", "Vultures 2", "Bully ✓"] },
+    { name: "Kanye West", albums: ["College Dropout", "Late Registration", "Graduation", "808s", "MBDTF", "Yeezus", "TLOP", "ye", "Donda", "Vultures 1", "Vultures 2", "Bully"] },
     { name: "Drake", albums: ["Thank Me Later", "Take Care", "Nothing Was The Same", "If You're Reading This", "Views", "More Life", "Scorpion", "CLB", "Honestly Nevermind", "For All The Dogs", "$ome $exy $ongs 4 U", "Iceman", "Habibti", "Maid of Honour"] },
     { name: "21 Savage", albums: ["The Slaughter Tape", "Issa Album", "I Am > I Was", "Savage Mode II", "American Dream"] },
     { name: "Giveon", albums: ["Take Time", "When It's All Said and Done", "Give Or Take"] },
@@ -532,15 +608,16 @@ const PHASE_COLORS = {
   "Phase 4 — Heavy hitters": "#D85A30"
 };
 
-const STORAGE_DATA_KEY = 'music_tracker_data_v6';
-const STORAGE_STATE_KEY = 'music_tracker_state_v6';
-const STORAGE_STREAK_KEY = 'music_tracker_streak_v6';
-const STORAGE_SPIN_KEY = 'music_tracker_spin_v6';
+const STORAGE_DATA_KEY = 'music_tracker_data_v7';
+const STORAGE_STATE_KEY = 'music_tracker_state_v7';
+const STORAGE_STREAK_KEY = 'music_tracker_streak_v7';
+const STORAGE_SPIN_KEY = 'music_tracker_spin_v7';
 
 let workingData = [];
 let progressState = {}; 
 let systemStreak = 0;
 let currentSpinning = null; 
+let activePopupKey = null;
 
 function init() {
   if (localStorage.getItem(STORAGE_DATA_KEY)) {
@@ -558,18 +635,9 @@ function init() {
     workingData.forEach(p => {
       p.artists.forEach(a => {
         a.albums.forEach((al) => {
-          const cleanName = al.replace(' ✓', '');
-          const key = `${a.name}|${cleanName}`;
-          progressState[key] = {
-            completed: al.endsWith(' ✓'),
-            rating: null
-          };
+          const key = `${a.name}|${al}`;
+          progressState[key] = { completed: false, rating: null };
         });
-      });
-    });
-    workingData.forEach(p => {
-      p.artists.forEach(a => {
-        a.albums = a.albums.map(al => al.replace(' ✓', ''));
       });
     });
     saveStructure();
@@ -579,10 +647,11 @@ function init() {
   systemStreak = parseInt(localStorage.getItem(STORAGE_STREAK_KEY) || "0");
   document.getElementById('stat-streak').textContent = `${systemStreak} Days`;
   
-  renderBadges();
   renderTracker();
   renderSpinningBanner();
   renderLeaderboard();
+  updateOverall();
+  renderBadges();
   generateRecommendation();
 }
 
@@ -591,6 +660,23 @@ function saveStructure() { localStorage.setItem(STORAGE_DATA_KEY, JSON.stringify
 
 function openModal(id) { document.getElementById(id).classList.add('active'); }
 function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+function checkAllForArtist(artistName) {
+  const targetArtist = findArtist(artistName);
+  if (!targetArtist) return;
+  
+  targetArtist.albums.forEach(album => {
+    const key = `${artistName}|${album}`;
+    if (!progressState[key]) progressState[key] = { completed: false, rating: null };
+    progressState[key].completed = true;
+  });
+  
+  saveState();
+  renderTracker();
+  updateOverall();
+  renderLeaderboard();
+  renderBadges();
+}
 
 function saveNewArtist() {
   const name = document.getElementById('new-artist-name').value.trim();
@@ -602,7 +688,7 @@ function saveNewArtist() {
     return;
   }
 
-  const cleanedAlbums = rawAlbums.map(a => a.trim().replace(' ✓', ''));
+  const cleanedAlbums = rawAlbums.map(a => a.trim());
   let targetPhase = workingData.find(p => p.phase === phaseName);
 
   if (!targetPhase) {
@@ -665,12 +751,8 @@ function addSingleTrack(artistName) {
 
 function deleteArtist(artistName) {
   if (!confirm(`Are you sure you want to remove ${artistName}?`)) return;
-  workingData.forEach(p => {
-    p.artists = p.artists.filter(a => a.name !== artistName);
-  });
-  Object.keys(progressState).forEach(k => {
-    if (k.startsWith(artistName + '|')) delete progressState[k];
-  });
+  workingData.forEach(p => { p.artists = p.artists.filter(a => a.name !== artistName); });
+  Object.keys(progressState).forEach(k => { if (k.startsWith(artistName + '|')) delete progressState[k]; });
   if (currentSpinning && currentSpinning.startsWith(artistName + '|')) {
     currentSpinning = null;
     localStorage.removeItem(STORAGE_SPIN_KEY);
@@ -712,11 +794,9 @@ window.toggle = function(key, artistName) {
     progressState[key] = { completed: false, rating: null };
   }
   
-  if (typeof progressState[key] === 'boolean') {
-    progressState[key] = { completed: !progressState[key], rating: null };
-  } else {
-    progressState[key].completed = !progressState[key].completed;
-    if (!progressState[key].completed) progressState[key].rating = null; 
+  progressState[key].completed = !progressState[key].completed;
+  if (!progressState[key].completed) {
+    progressState[key].rating = null;
   }
 
   saveState();
@@ -729,14 +809,21 @@ window.toggle = function(key, artistName) {
   if (checkEl) checkEl.classList.toggle('done', isDone);
   if (lblEl) lblEl.classList.toggle('done', isDone);
   
+  // Launch Immediate Rating Modal on manual Check
+  if (isDone) {
+    activePopupKey = key;
+    const [art, alb] = key.split('|');
+    document.getElementById('rating-popup-subtitle').textContent = `"${alb}" by ${art}`;
+    openModal('rating-popup-modal');
+  }
+
   const targetArtist = findArtist(artistName);
   if (targetArtist) {
     const totalTracks = targetArtist.albums.length;
     let doneCount = 0;
     targetArtist.albums.forEach(item => {
       const stateObj = progressState[`${artistName}|${item}`];
-      const stateDone = stateObj && typeof stateObj === 'object' ? stateObj.completed : stateObj;
-      if (stateDone) doneCount++;
+      if (stateObj && stateObj.completed) doneCount++;
     });
     
     const pct = totalTracks > 0 ? Math.round(doneCount / totalTracks * 100) : 0;
@@ -751,11 +838,28 @@ window.toggle = function(key, artistName) {
   renderLeaderboard();
 }
 
+function submitPopupRating(val) {
+  if (activePopupKey && progressState[activePopupKey]) {
+    progressState[activePopupKey].rating = val;
+    saveState();
+    
+    // Dynamically look for the embedded select dropdown to match values
+    const selectEl = document.querySelector(`[data-select-key="${activePopupKey.replace(/'/g, "\\'")}"]`);
+    if (selectEl) selectEl.value = val;
+    
+    renderLeaderboard();
+    renderBadges();
+    closeModal('rating-popup-modal');
+    activePopupKey = null;
+  }
+}
+
 function updateRating(key, ratingValue) {
-  if (progressState[key] && typeof progressState[key] === 'object') {
+  if (progressState[key]) {
     progressState[key].rating = ratingValue === "" ? null : parseInt(ratingValue);
     saveState();
     renderLeaderboard();
+    renderBadges();
   }
 }
 
@@ -771,11 +875,7 @@ function toggleSpin(key) {
   
   document.querySelectorAll('.spin-btn').forEach(btn => {
     const bKey = btn.getAttribute('data-spin-key');
-    if (bKey === currentSpinning) {
-      btn.classList.add('active');
-    } else {
-      btn.classList.remove('active');
-    }
+    if (bKey === currentSpinning) { btn.classList.add('active'); } else { btn.classList.remove('active'); }
   });
 }
 
@@ -792,7 +892,7 @@ function renderSpinningBanner() {
           <div class="rec-title" style="color: var(--orange)">🔥 Currently Spinning</div>
           <div class="rec-body">${album} <span style="color: var(--text2); font-size: 13px;">by ${artist}</span></div>
         </div>
-        <button class="btn" style="padding: 6px 12px; font-size:12px; border-color: rgba(218,90,48,0.3)" onclick="toggleSpin('${currentSpinning.replace(/'/g, "\\\\'")}')">Remove</button>
+        <button class="btn" style="padding: 6px 12px; font-size:12px; border-color: rgba(249,115,22,0.3)" onclick="toggleSpin('${currentSpinning.replace(/'/g, "\\\\'")}')">Remove</button>
       </div>
     `;
     container.innerHTML = html;
@@ -801,37 +901,67 @@ function renderSpinningBanner() {
 
 function renderLeaderboard() {
   const container = document.getElementById('leaderboard-container');
-  if (!container) return;
+  const flopContainer = document.getElementById('flop-leaderboard-container');
+  if (!container || !flopContainer) return;
+  
   container.innerHTML = '';
+  flopContainer.innerHTML = '';
 
   let ratedItems = [];
   Object.keys(progressState).forEach(key => {
     const item = progressState[key];
-    if (item && typeof item === 'object' && item.completed && item.rating !== null) {
+    if (item && item.completed && item.rating !== null) {
       const [artist, album] = key.split('|');
       ratedItems.push({ key, artist, album, rating: item.rating });
     }
   });
 
-  ratedItems.sort((a, b) => b.rating - a.rating);
-  let top10 = ratedItems.slice(0, 10);
+  // Masterpieces
+  let highRated = [...ratedItems].sort((a, b) => b.rating - a.rating);
+  let top10 = highRated.filter(x => x.rating >= 6).slice(0, 5);
 
   if (top10.length > 0) {
     let html = `
-      <div class="leaderboard-section">
-        <div class="leaderboard-title">🏆 Top Masterpieces Leaderboard</div>
+      <div class="leaderboard-section gold-tier">
+        <div class="leaderboard-title">🏆 Top Masterpieces</div>
         <div class="leaderboard-grid">
     `;
     top10.forEach((item, index) => {
       html += `
         <div class="leaderboard-item">
-          <span>${index + 1}. <strong>${item.album}</strong> <span style="color: var(--text3)">(${item.artist})</span></span>
-          <span style="color: #ffd700; font-family: 'DM Mono', monospace;">${item.rating}/10</span>
+          <span><strong>${item.album}</strong> <span style="color: var(--text3)">(${item.artist})</span></span>
+          <span style="color: var(--gold); font-family: 'DM Mono', monospace; font-weight:700;">${item.rating}/10</span>
         </div>
       `;
     });
     html += `</div></div>`;
     container.innerHTML = html;
+  } else {
+    container.innerHTML = `<div class="leaderboard-section gold-tier"><div class="leaderboard-title">🏆 Top Masterpieces</div><div style="font-size:12px; color:var(--text3)">No entries evaluated at 6+/10 yet.</div></div>`;
+  }
+
+  // Flops Leaderboard
+  let lowRated = [...ratedItems].sort((a, b) => a.rating - b.rating);
+  let worst5 = lowRated.filter(x => x.rating <= 5).slice(0, 5);
+
+  if (worst5.length > 0) {
+    let flopHtml = `
+      <div class="leaderboard-section trash-tier">
+        <div class="leaderboard-title">🗑️ System Flops / Low Tier</div>
+        <div class="leaderboard-grid">
+    `;
+    worst5.forEach((item) => {
+      flopHtml += `
+        <div class="leaderboard-item">
+          <span><strong>${item.album}</strong> <span style="color: var(--text3)">(${item.artist})</span></span>
+          <span style="color: var(--red); font-family: 'DM Mono', monospace; font-weight:700;">${item.rating}/10</span>
+        </div>
+      `;
+    });
+    flopHtml += `</div></div>`;
+    flopContainer.innerHTML = flopHtml;
+  } else {
+    flopContainer.innerHTML = `<div class="leaderboard-section trash-tier"><div class="leaderboard-title">🗑️ System Flops</div><div style="font-size:12px; color:var(--text3)">No entries evaluated at 5/10 or below yet.</div></div>`;
   }
 }
 
@@ -858,8 +988,7 @@ function updateOverall() {
       a.albums.forEach((al) => {
         total++;
         const stateObj = progressState[`${a.name}|${al}`];
-        const stateDone = stateObj && typeof stateObj === 'object' ? stateObj.completed : stateObj;
-        if (stateDone) done++;
+        if (stateObj && stateObj.completed) done++;
         else artistComplete = false;
       });
       if (artistComplete && a.albums.length > 0) fullyCompletedArtists++;
@@ -873,6 +1002,63 @@ function updateOverall() {
   document.getElementById('stat-artists').textContent = `${fullyCompletedArtists} / ${totalArtistsCount}`;
 }
 
+function renderBadges() {
+  const container = document.getElementById('badges-container');
+  if (!container) return;
+
+  let totalItems = 0, completedItems = 0, perfectArtists = 0;
+  let totalRatings = 0, tensCount = 0;
+
+  workingData.forEach(p => {
+    p.artists.forEach(a => {
+      let currentArtistComplete = true;
+      if (a.albums.length === 0) currentArtistComplete = false;
+      a.albums.forEach(al => {
+        totalItems++;
+        const state = progressState[`${a.name}|${al}`];
+        if (state && state.completed) {
+          completedItems++;
+          if (state.rating !== null) {
+            totalRatings++;
+            if (state.rating === 10) tensCount++;
+          }
+        } else {
+          currentArtistComplete = false;
+        }
+      });
+      if (currentArtistComplete && a.albums.length > 0) perfectArtists++;
+    });
+  });
+
+  const pct = totalItems > 0 ? Math.round(completedItems / totalItems * 100) : 0;
+
+  const badgeDefinitions = [
+    { id: 'b1', name: 'First Spin', desc: 'Complete 1 album/track', unlocked: completedItems >= 1, icon: '💿', tier: 'normal' },
+    { id: 'b2', name: 'Collector', desc: 'Complete 10 albums/tracks', unlocked: completedItems >= 10, icon: '🎧', tier: 'normal' },
+    { id: 'b3', name: 'Completionist', desc: 'Achieve 25 total unlocks', unlocked: completedItems >= 25, icon: '🦅', tier: 'purple' },
+    { id: 'b4', name: 'Discog Master', desc: '1 complete artist catalog', unlocked: perfectArtists >= 1, icon: '👑', tier: 'normal' },
+    { id: 'b5', name: 'Trilogy King', desc: '3 complete artist catalogs', unlocked: perfectArtists >= 3, icon: '💎', tier: 'purple' },
+    { id: 'b6', name: 'Critic Vision', desc: 'Rate 5 distinct items', unlocked: totalRatings >= 5, icon: '📝', tier: 'normal' },
+    { id: 'b7', name: 'Flawless Taste', desc: 'Log your first 10/10 masterpiece', unlocked: tensCount >= 1, icon: '🏆', tier: 'gold' },
+    { id: 'b8', name: 'Halfway Locked', desc: 'Hit 50% overall completion', unlocked: pct >= 50, icon: '⚡', tier: 'gold' }
+  ];
+
+  let html = '';
+  badgeDefinitions.forEach(b => {
+    let tierClass = '';
+    if (b.tier === 'gold') tierClass = 'gold-badge';
+    if (b.tier === 'purple') tierClass = 'purple-badge';
+    html += `
+      <div class="badge ${b.unlocked ? 'unlocked' : ''} ${tierClass}">
+        <span class="badge-icon">${b.icon}</span>
+        <span class="badge-name">${b.name}</span>
+        <span class="badge-desc">${b.desc}</span>
+      </div>
+    `;
+  });
+  container.innerHTML = html;
+}
+
 function handleSearch() {
   const query = document.getElementById('search-box').value.toLowerCase().trim();
   const cards = document.querySelectorAll('.artist-card');
@@ -884,11 +1070,7 @@ function handleSearch() {
     const artistMatches = artistName.includes(query);
     const albumMatches = albumLabels.some(lbl => lbl.includes(query));
     
-    if (artistMatches || albumMatches) {
-      card.style.display = 'block';
-    } else {
-      card.style.display = 'none';
-    }
+    if (artistMatches || albumMatches) { card.style.display = 'block'; } else { card.style.display = 'none'; }
   });
 }
 
@@ -898,8 +1080,7 @@ function generateRecommendation() {
     p.artists.forEach(a => {
       a.albums.forEach((al) => {
         const stateObj = progressState[`${a.name}|${al}`];
-        const stateDone = stateObj && typeof stateObj === 'object' ? stateObj.completed : stateObj;
-        if (!stateDone) {
+        if (!stateObj || !stateObj.completed) {
           uncompleted.push({ artist: a.name, album: al });
         }
       });
@@ -915,165 +1096,95 @@ function generateRecommendation() {
   }
 }
 
-const badgeDefinitions = [
-  { id: 'first', name: 'First Check', emoji: '💿' },
-  { id: 'tyler', name: 'Tyler Complete', emoji: '🐝' },
-  { id: 'carti', name: 'Carti Survivor 😭', emoji: '🧛' },
-  { id: 'half', name: '50% Listener', emoji: '👑' },
-  { id: 'phase1', name: 'Phase 1 Clear', emoji: '🏁' }
-];
-
-function renderBadges() {
-  const container = document.getElementById('badges-container');
-  if (!container) return;
-  container.innerHTML = '';
-
-  let totalItems = 0;
-  let doneItems = 0;
-  let tylerDone = true;
-  let cartiDone = true;
-  let phase1Done = true;
-  let hasFirstCheck = false;
-
-  workingData.forEach(p => {
-    const isPhase1 = p.phase.includes("Phase 1");
-    p.artists.forEach(a => {
-      const isTyler = a.name.toLowerCase().includes("tyler");
-      const isCarti = a.name.toLowerCase().includes("carti");
-      
-      a.albums.forEach(al => {
-        totalItems++;
-        const stateObj = progressState[`${a.name}|${al}`];
-        const isDone = stateObj && typeof stateObj === 'object' ? stateObj.completed : stateObj;
-        
-        if (isDone) {
-          doneItems++;
-          hasFirstCheck = true;
-        } else {
-          if (isTyler) tylerDone = false;
-          if (isCarti) cartiDone = false;
-          if (isPhase1) phase1Done = false;
-        }
-      });
-    });
-  });
-
-  const pct = totalItems > 0 ? (doneItems / totalItems) : 0;
-
-  badgeDefinitions.forEach(b => {
-    let unlocked = false;
-    if (b.id === 'first' && hasFirstCheck) unlocked = true;
-    if (b.id === 'tyler' && tylerDone && totalItems > 0) unlocked = true;
-    if (b.id === 'carti' && cartiDone && totalItems > 0) unlocked = true;
-    if (b.id === 'half' && pct >= 0.5 && totalItems > 0) unlocked = true;
-    if (b.id === 'phase1' && phase1Done && totalItems > 0) unlocked = true;
-
-    const el = document.createElement('div');
-    el.className = `badge ${unlocked ? 'unlocked' : ''}`;
-    el.innerHTML = `<span>${b.emoji}</span> <span>${b.name}</span>`;
-    container.appendChild(el);
-  });
-}
-
 function renderTracker() {
-  const container = document.getElementById('tracker');
-  if (!container) return;
-  container.innerHTML = '';
+  const tracker = document.getElementById('tracker');
+  if (!tracker) return;
+  tracker.innerHTML = '';
 
   workingData.forEach(p => {
-    const section = document.createElement('div');
-    section.className = 'phase-section';
-    
-    section.innerHTML = `
-      <div class="phase-label" style="color: ${p.color}">
-        <span>${p.phase}</span>
-      </div>
-      <div class="cards-grid"></div>
+    if (p.artists.length === 0) return;
+
+    let sectionHtml = `
+      <div class="phase-section">
+        <div class="phase-label">${p.phase}</div>
+        <div class="cards-grid">
     `;
-    
-    const grid = section.querySelector('.cards-grid');
 
     p.artists.forEach(a => {
-      let totalTracks = a.albums.length;
       let doneCount = 0;
-      
-      a.albums.forEach(item => {
-        const stateObj = progressState[`${a.name}|${item}`];
-        if (stateObj && stateObj.completed) doneCount++;
+      a.albums.forEach(al => {
+        const state = progressState[`${a.name}|${al}`];
+        if (state && state.completed) doneCount++;
       });
-      
-      const pct = totalTracks > 0 ? Math.round(doneCount / totalTracks * 100) : 0;
-      
-      const card = document.createElement('div');
-      card.className = 'artist-card';
-      card.setAttribute('data-name', a.name);
-      
-      let cardHtml = `
-        <div class="artist-header">
-          <div class="artist-name">${a.name}</div>
-          <div class="artist-progress-bar-container">
-            <div class="artist-progress-bar-fill" data-bar="${a.name}" style="width: ${pct}%"></div>
+      const pct = a.albums.length > 0 ? Math.round(doneCount / a.albums.length * 100) : 0;
+
+      sectionHtml += `
+        <div class="artist-card" data-name="${a.name}">
+          <div class="artist-header">
+            <div class="artist-name">${a.name}</div>
+            <div class="artist-progress-bar-container">
+              <div class="artist-progress-bar-fill" data-bar="${a.name}" style="width: ${pct}%;"></div>
+            </div>
+            <div class="pct" data-pct="${a.name}">${pct}%</div>
+            
+            <div class="card-actions">
+              <button class="compact-btn" onclick="checkAllForArtist('${a.name.replace(/'/g, "\\'")}')">✓ Check All</button>
+              <button class="compact-btn" onclick="addSingleTrack('${a.name.replace(/'/g, "\\'")}')">➕ Add Item</button>
+              <button class="action-btn" title="Delete Artist" onclick="deleteArtist('${a.name.replace(/'/g, "\\'")}')">🗑️</button>
+            </div>
           </div>
-          <div class="pct" data-pct="${a.name}">${pct}%</div>
-          <div class="card-actions">
-            <button class="quick-add-btn" onclick="addSingleTrack('${a.name.replace(/'/g, "\\'")}')">➕ Add Track</button>
-            <button class="action-btn" onclick="deleteArtist('${a.name.replace(/'/g, "\\'")}')" style="color: var(--text3)">🗑️ Remove</button>
-          </div>
-        </div>
-        <div class="albums">
+          
+          <div class="albums">
       `;
 
       a.albums.forEach(al => {
         const key = `${a.name}|${al}`;
-        const stateObj = progressState[key] || { completed: false, rating: null };
-        const isDone = stateObj.completed;
-        const currentRating = stateObj.rating || "";
-        const isSpinning = currentSpinning === key;
+        const state = progressState[key] || { completed: false, rating: null };
+        const isDone = state.completed;
+        const ratingVal = state.rating || "";
 
-        let options = '<option value="">-</option>';
-        for(let i=1; i<=10; i++) {
-          options += `<option value="${i}" ${currentRating == i ? 'selected' : ''}>${i}</option>`;
-        }
-
-        cardHtml += `
+        sectionHtml += `
           <div class="album-row">
-            <div class="album-left" onclick="window.toggle('${key.replace(/'/g, "\\'")}', '${a.name.replace(/'/g, "\\'")}')">
-              <div class="album-check ${isDone ? 'done' : ''}" data-key="${key}"></div>
-              <div class="album-label ${isDone ? 'done' : ''}" data-label="${key}" title="${al}">${al}</div>
+            <div class="album-left">
+              <div class="album-check ${isDone ? 'done' : ''}" data-key="${key}" onclick="toggle('${key.replace(/'/g, "\\'")}', '${a.name.replace(/'/g, "\\'")}')"></div>
+              <div class="album-label ${isDone ? 'done' : ''}" data-label="${key}" onclick="toggle('${key.replace(/'/g, "\\'")}', '${a.name.replace(/'/g, "\\'")}')">${al}</div>
             </div>
+            
             <div class="album-actions">
-              <button class="spin-btn ${isSpinning ? 'active' : ''}" data-spin-key="${key}" onclick="toggleSpin('${key.replace(/'/g, "\\\\'")}')">📌</button>
-              <select class="rating-select" onchange="updateRating('${key.replace(/'/g, "\\'")}', this.value)">
-                ${options}
+              <button class="spin-btn ${currentSpinning === key ? 'active' : ''}" data-spin-key="${key}" onclick="toggleSpin('${key.replace(/'/g, "\\'")}')" title="Mark as Currently Spinning">🔥</button>
+              
+              <select class="rating-select" data-select-key="${key}" onchange="updateRating('${key.replace(/'/g, "\\'")}', this.value)">
+                <option value="">--</option>
+                ${[1,2,3,4,5,6,7,8,9,10].map(v => `<option value="${v}" ${ratingVal == v ? 'selected' : ''}>${v}</option>`).join('')}
               </select>
-              <button class="item-delete" onclick="deleteAlbum('${a.name.replace(/'/g, "\\'")}', '${al.replace(/'/g, "\\'")}')">❌</button>
+              
+              <button class="item-delete" onclick="deleteAlbum('${a.name.replace(/'/g, "\\'")}', '${al.replace(/'/g, "\\'")}')">×</button>
             </div>
           </div>
         `;
       });
 
-      cardHtml += `</div>`;
-      card.innerHTML = cardHtml;
-      grid.appendChild(card);
+      sectionHtml += `
+          </div>
+        </div>
+      `;
     });
 
-    container.appendChild(section);
+    sectionHtml += `
+        </div>
+      </div>
+    `;
+    tracker.innerHTML += sectionHtml;
   });
 }
 
 function exportData() {
-  const backup = {
-    data: workingData,
-    state: progressState,
-    streak: systemStreak
-  };
-  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backup));
-  const downloadAnchor = document.createElement('a');
-  downloadAnchor.setAttribute("href", dataStr);
-  downloadAnchor.setAttribute("download", `music_tracker_backup_${new Date().toISOString().slice(0,10)}.json`);
-  document.body.appendChild(downloadAnchor);
-  downloadAnchor.click();
-  downloadAnchor.remove();
+  const bundle = { data: workingData, state: progressState, streak: systemStreak };
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(bundle));
+  const dlAnchorElem = document.createElement('a');
+  dlAnchorElem.setAttribute("href", dataStr);
+  dlAnchorElem.setAttribute("download", `music_tracker_backup_${new Date().toISOString().slice(0,10)}.json`);
+  dlAnchorElem.click();
 }
 
 function importData(event) {
@@ -1082,39 +1193,33 @@ function importData(event) {
   const reader = new FileReader();
   reader.onload = function(e) {
     try {
-      const imported = JSON.parse(e.target.result);
-      if (imported.data && imported.state) {
-        workingData = imported.data;
-        progressState = imported.state;
-        systemStreak = imported.streak || 0;
+      const bundle = JSON.parse(e.target.result);
+      if (bundle.data && bundle.state) {
+        workingData = bundle.data;
+        progressState = bundle.state;
+        systemStreak = bundle.streak || 0;
         
-        saveStructure();
-        saveState();
+        localStorage.setItem(STORAGE_DATA_KEY, JSON.stringify(workingData));
+        localStorage.setItem(STORAGE_STATE_KEY, JSON.stringify(progressState));
         localStorage.setItem(STORAGE_STREAK_KEY, systemStreak);
         
         document.getElementById('stat-streak').textContent = `${systemStreak} Days`;
-        renderBadges();
         renderTracker();
         renderSpinningBanner();
         renderLeaderboard();
         updateOverall();
+        renderBadges();
         generateRecommendation();
-        alert("Database successfully restored!");
-      } else {
-        alert("Invalid backup file format.");
+        alert("Database successfully synchronized.");
       }
-    } catch (err) {
-      alert("Error reading backup file.");
+    } catch(err) {
+      alert("Invalid backup configuration file.");
     }
   };
   reader.readAsText(file);
 }
 
-// Kickstart configuration lifecycle
-window.onload = function() {
-  init();
-  updateOverall();
-};
+window.onload = init;
 </script>
 </body>
 </html>
