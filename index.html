@@ -108,7 +108,6 @@
   .stat-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text3); text-transform: uppercase; }
   .stat-val { font-size: 15px; font-weight: 700; color: #fff; margin-top: 2px; }
 
-  /* New Featured Dashboard Components */
   .current-rotation-banner {
     background: linear-gradient(135deg, #221612 0%, #0f0a08 100%);
     border: 1px dashed var(--orange);
@@ -235,7 +234,7 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    opacity: 0.4;
+    opacity: 0.3;
     transition: all 0.3s ease;
   }
 
@@ -276,6 +275,22 @@
 
   .artist-header { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
   .artist-name { font-size: 15px; font-weight: 700; color: #fff; min-width: 160px; }
+  
+  .artist-progress-bar-container {
+    flex: 1;
+    height: 4px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 4px;
+    overflow: hidden;
+    max-width: 200px;
+  }
+  .artist-progress-bar-fill {
+    height: 100%;
+    background: var(--blue);
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+
   .pct { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text2); min-width: 40px; text-align: right; }
 
   .card-actions {
@@ -337,7 +352,6 @@
   }
   .album-label.done { text-decoration: line-through; color: var(--text3); }
 
-  /* Utility controls for rating & spin */
   .album-actions { display: flex; align-items: center; gap: 8px; }
   
   .spin-btn {
@@ -419,7 +433,6 @@
   </header>
 
   <div id="spinning-container"></div>
-
   <div id="leaderboard-container"></div>
 
   <div class="rec-card" id="rec-card">
@@ -476,12 +489,6 @@ const defaultData = [
     { name: "Tyler the Creator", albums: ["Goblin", "Wolf", "Cherry Bomb", "Flower Boy ✓", "IGOR ✓", "Call Me If You Get Lost", "Chromakopia ✓", "Don't Tap the Glass"] },
     { name: "Daniel Caesar", albums: ["Freudian ✓", "Case Study 01", "Never Enough", "Son of Spergy"] },
     { name: "Lil Tecca", albums: ["We Love You Tecca", "Virgo World", "We Love You Tecca 2", "Tec", "Plan A", "Dopamine ✓"] },
-    { name: "Lil Wayne", albums: [
-      "Tha Block Is Hot (1999)", "Lights Out (2000)", "500 Degreez (2002)", "Tha Carter (2004)", 
-      "Tha Carter II (2005)", "Tha Carter III (2008)", "Rebirth (2010)", "I Am Not a Human Being (2010)", 
-      "Tha Carter IV (2011)", "I Am Not a Human Being II (2013)", "Free Weezy Album (2015)", 
-      "Tha Carter V (2018)", "Funeral (2020)", "Tha Carter VI (2025)", "Aamil"
-    ] },
     { name: "Lil Yachty", albums: ["Lil Boat", "Nuthin' 2 Prove", "Let's Start Here.", "Bad Cameo", "Secret Recipe"] },
     { name: "Malcolm Todd", albums: ["Sweet Boy", "Shower Rhythms", "Art House"] }
   ]},
@@ -497,6 +504,7 @@ const defaultData = [
     { name: "Baby Keem", albums: ["The Sound of Bad Habit", "DIE FOR MY BITCH", "The Melodic Blue"] }
   ]},
   { phase: "Phase 3 — Level up", color: "#378ADD", artists: [
+    { name: "Isaiah Rashad", albums: ["Cilvia Demo", "The Sun's Tirade", "The House Is Burning", "It's Been Awful"] },
     { name: "J. Cole", albums: ["Cole World", "Born Sinner", "2014 Forest Hills Drive", "KOD", "The Off-Season", "It's a Boy", "The Fall-Off"] },
     { name: "Tame Impala", albums: ["Innerspeaker", "Lonerism", "Currents", "The Slow Rush"] },
     { name: "Joey Bada$$", albums: ["1999", "B4.Da.$$", "All-Amerikkkan Bada$$", "2000", "Lonely At The Top"] },
@@ -512,8 +520,9 @@ const defaultData = [
     { name: "Kendrick Lamar", albums: ["Section.80", "good kid m.A.A.d city", "To Pimp a Butterfly", "DAMN.", "Mr. Morale & The Big Steppers", "GNX"] },
     { name: "MF DOOM", albums: ["Operation Doomsday", "Madvillainy", "MM..FOOD", "Born Like This", "JJ DOOM"] },
     { name: "Tory Lanez", albums: ["I Told You", "Memories Don't Die", "Love Me Now?", "Chixtape 5", "Daystar", "Alone At Prom"] },
-    { name: "SZA", albums: ["Z", "Ctrl", "SOS", "LANA"] }
-  ]},
+    { name: "SZA", albums: ["Z", "Ctrl", "SOS", "LANA"] },
+    { name: "Lil Wayne", albums: ["Tha Block Is Hot", "Lights Out", "500 Degreez", "Tha Carter", "Tha Carter II", "Tha Carter III", "Rebirth", "I Am Not a Human Being", "Tha Carter IV", "I Am Not a Human Being II", "Free Weezy Album", "Tha Carter V", "Funeral", "Tha Carter VI", "Aamil" ] }
+  ]}
 ];
 
 const PHASE_COLORS = {
@@ -529,9 +538,9 @@ const STORAGE_STREAK_KEY = 'music_tracker_streak_v6';
 const STORAGE_SPIN_KEY = 'music_tracker_spin_v6';
 
 let workingData = [];
-let progressState = {}; // Format: { "Artist|Album": { completed: true/false, rating: null/1-10 } }
+let progressState = {}; 
 let systemStreak = 0;
-let currentSpinning = null; // Key tracking format: "Artist|Album"
+let currentSpinning = null; 
 
 function init() {
   if (localStorage.getItem(STORAGE_DATA_KEY)) {
@@ -558,7 +567,6 @@ function init() {
         });
       });
     });
-    // Strip original ' ✓' text variants inside working database array clean references
     workingData.forEach(p => {
       p.artists.forEach(a => {
         a.albums = a.albums.map(al => al.replace(' ✓', ''));
@@ -573,6 +581,8 @@ function init() {
   
   renderBadges();
   renderTracker();
+  renderSpinningBanner();
+  renderLeaderboard();
   generateRecommendation();
 }
 
@@ -628,6 +638,7 @@ function saveNewArtist() {
   document.getElementById('new-artist-albums').value = '';
   
   renderTracker();
+  updateOverall();
 }
 
 function addSingleTrack(artistName) {
@@ -648,6 +659,7 @@ function addSingleTrack(artistName) {
     saveStructure();
     saveState();
     renderTracker();
+    updateOverall();
   }
 }
 
@@ -666,6 +678,7 @@ function deleteArtist(artistName) {
   saveStructure();
   saveState();
   renderTracker();
+  updateOverall();
 }
 
 function deleteAlbum(artistName, trackName) {
@@ -683,6 +696,7 @@ function deleteAlbum(artistName, trackName) {
   saveStructure();
   saveState();
   renderTracker();
+  updateOverall();
 }
 
 function findArtist(name) {
@@ -694,12 +708,15 @@ function findArtist(name) {
 }
 
 window.toggle = function(key, artistName) {
-  // Graceful support handling legacy structural elements or standard configurations
+  if (!progressState[key]) {
+    progressState[key] = { completed: false, rating: null };
+  }
+  
   if (typeof progressState[key] === 'boolean') {
     progressState[key] = { completed: !progressState[key], rating: null };
   } else {
     progressState[key].completed = !progressState[key].completed;
-    if (!progressState[key].completed) progressState[key].rating = null; // Wipe score data if uncompleted
+    if (!progressState[key].completed) progressState[key].rating = null; 
   }
 
   saveState();
@@ -752,15 +769,12 @@ function toggleSpin(key) {
   }
   renderSpinningBanner();
   
-  // Re-render target icon indicators manually
   document.querySelectorAll('.spin-btn').forEach(btn => {
     const bKey = btn.getAttribute('data-spin-key');
     if (bKey === currentSpinning) {
       btn.classList.add('active');
-      btn.innerHTML = '📌';
     } else {
       btn.classList.remove('active');
-      btn.innerHTML = '📌';
     }
   });
 }
@@ -778,7 +792,7 @@ function renderSpinningBanner() {
           <div class="rec-title" style="color: var(--orange)">🔥 Currently Spinning</div>
           <div class="rec-body">${album} <span style="color: var(--text2); font-size: 13px;">by ${artist}</span></div>
         </div>
-        <button class="btn" style="padding: 6px 12px; font-size:12px; border-color: rgba(218,90,48,0.3)" onclick="toggleSpin('${currentSpinning.replace(/'/g, "\\'")}')">Remove</button>
+        <button class="btn" style="padding: 6px 12px; font-size:12px; border-color: rgba(218,90,48,0.3)" onclick="toggleSpin('${currentSpinning.replace(/'/g, "\\\\'")}')">Remove</button>
       </div>
     `;
     container.innerHTML = html;
@@ -799,7 +813,6 @@ function renderLeaderboard() {
     }
   });
 
-  // Sort descending by numeric assignment score value
   ratedItems.sort((a, b) => b.rating - a.rating);
   let top10 = ratedItems.slice(0, 10);
 
@@ -912,176 +925,196 @@ const badgeDefinitions = [
 
 function renderBadges() {
   const container = document.getElementById('badges-container');
+  if (!container) return;
   container.innerHTML = '';
-  
-  const unlocked = {};
-  let total = 0, done = 0;
-  
+
+  let totalItems = 0;
+  let doneItems = 0;
+  let tylerDone = true;
+  let cartiDone = true;
+  let phase1Done = true;
+  let hasFirstCheck = false;
+
   workingData.forEach(p => {
+    const isPhase1 = p.phase.includes("Phase 1");
     p.artists.forEach(a => {
-      let artistDone = true;
-      if (a.albums.length === 0) artistDone = false;
+      const isTyler = a.name.toLowerCase().includes("tyler");
+      const isCarti = a.name.toLowerCase().includes("carti");
       
-      a.albums.forEach((al) => {
-        total++;
+      a.albums.forEach(al => {
+        totalItems++;
         const stateObj = progressState[`${a.name}|${al}`];
-        const stateDone = stateObj && typeof stateObj === 'object' ? stateObj.completed : stateObj;
-        if (stateDone) done++;
-        else artistDone = false;
-      });
-      if (a.name === "Tyler the Creator" && artistDone) unlocked['tyler'] = true;
-      if (a.name === "Playboi Carti" && artistDone) unlocked['carti'] = true;
-    });
-    
-    let phaseDone = true;
-    let hasArtists = p.artists.length > 0;
-    p.artists.forEach(a => {
-      if (a.albums.length === 0) phaseDone = false;
-      a.albums.forEach((al) => {
-        const stateObj = progressState[`${a.name}|${al}`];
-        const stateDone = stateObj && typeof stateObj === 'object' ? stateObj.completed : stateObj;
-        if (!stateDone) phaseDone = false;
+        const isDone = stateObj && typeof stateObj === 'object' ? stateObj.completed : stateObj;
+        
+        if (isDone) {
+          doneItems++;
+          hasFirstCheck = true;
+        } else {
+          if (isTyler) tylerDone = false;
+          if (isCarti) cartiDone = false;
+          if (isPhase1) phase1Done = false;
+        }
       });
     });
-    if (p.phase.includes("Phase 1") && phaseDone && hasArtists) unlocked['phase1'] = true;
   });
 
-  if (done > 0) unlocked['first'] = true;
-  if (total > 0 && done / total >= 0.5) unlocked['half'] = true;
+  const pct = totalItems > 0 ? (doneItems / totalItems) : 0;
 
   badgeDefinitions.forEach(b => {
-    const isU = unlocked[b.id];
-    const div = document.createElement('div');
-    div.className = `badge ${isU ? 'unlocked' : ''}`;
-    div.innerHTML = `<span>${b.emoji}</span> ${b.name}`;
-    container.appendChild(div);
+    let unlocked = false;
+    if (b.id === 'first' && hasFirstCheck) unlocked = true;
+    if (b.id === 'tyler' && tylerDone && totalItems > 0) unlocked = true;
+    if (b.id === 'carti' && cartiDone && totalItems > 0) unlocked = true;
+    if (b.id === 'half' && pct >= 0.5 && totalItems > 0) unlocked = true;
+    if (b.id === 'phase1' && phase1Done && totalItems > 0) unlocked = true;
+
+    const el = document.createElement('div');
+    el.className = `badge ${unlocked ? 'unlocked' : ''}`;
+    el.innerHTML = `<span>${b.emoji}</span> <span>${b.name}</span>`;
+    container.appendChild(el);
   });
-}
-
-function exportData() {
-  const backup = { data: workingData, state: progressState };
-  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backup));
-  const dlAnchor = document.createElement('a');
-  dlAnchor.setAttribute("href", dataStr);
-  dlAnchor.setAttribute("download", "music_tracker_backup.json");
-  document.body.appendChild(dlAnchor);
-  dlAnchor.click();
-  dlAnchor.remove();
-}
-
-function importData(e) {
-  const reader = new FileReader();
-  reader.onload = function(event) {
-    try {
-      const parsed = JSON.parse(event.target.result);
-      if (parsed.data && parsed.state) {
-        workingData = parsed.data;
-        progressState = parsed.state;
-        saveStructure();
-        saveState();
-        renderTracker();
-        renderBadges();
-        renderSpinningBanner();
-        renderLeaderboard();
-        alert("Data successfully restored!");
-      }
-    } catch(err) { alert("Invalid backup structure file."); }
-  };
-  reader.readAsText(e.target.files[0]);
 }
 
 function renderTracker() {
   const container = document.getElementById('tracker');
+  if (!container) return;
   container.innerHTML = '';
 
-  workingData.forEach(phase => {
-    if (phase.artists.length === 0) return;
-    
+  workingData.forEach(p => {
     const section = document.createElement('div');
     section.className = 'phase-section';
     
-    const pl = document.createElement('div');
-    pl.className = 'phase-label';
-    pl.textContent = phase.phase;
-    section.appendChild(pl);
+    section.innerHTML = `
+      <div class="phase-label" style="color: ${p.color}">
+        <span>${p.phase}</span>
+      </div>
+      <div class="cards-grid"></div>
+    `;
     
-    const cardsGrid = document.createElement('div');
-    cardsGrid.className = 'cards-grid';
-    
-    phase.artists.forEach(a => {
+    const grid = section.querySelector('.cards-grid');
+
+    p.artists.forEach(a => {
+      let totalTracks = a.albums.length;
       let doneCount = 0;
+      
       a.albums.forEach(item => {
         const stateObj = progressState[`${a.name}|${item}`];
-        const stateDone = stateObj && typeof stateObj === 'object' ? stateObj.completed : stateObj;
-        if (stateDone) doneCount++;
+        if (stateObj && stateObj.completed) doneCount++;
       });
-      const pct = a.albums.length > 0 ? Math.round(doneCount / a.albums.length * 100) : 0;
+      
+      const pct = totalTracks > 0 ? Math.round(doneCount / totalTracks * 100) : 0;
       
       const card = document.createElement('div');
       card.className = 'artist-card';
       card.setAttribute('data-name', a.name);
       
-      let albumsGridHtml = a.albums.map((al) => {
-        const key = `${a.name}|${al}`;
-        const stateObj = progressState[key];
-        
-        // Handle object translation check fallback parsing layers
-        const isDone = stateObj && typeof stateObj === 'object' ? stateObj.completed : stateObj;
-        const currentRating = stateObj && typeof stateObj === 'object' && typeof stateObj.rating === 'number' ? stateObj.rating : null;
-        const isPinned = currentSpinning === key;
-
-        return `
-          <div class="album-row">
-            <div class="album-left">
-              <div class="album-check ${isDone ? 'done' : ''}" data-key="${key}" onclick="toggle('${key}', '${a.name}')"></div>
-              <span class="album-label ${isDone ? 'done' : ''}" data-label="${key}" title="${al}">${al}</span>
-            </div>
-            <div class="album-actions">
-              <button class="spin-btn ${isPinned ? 'active' : ''}" data-spin-key="${key}" onclick="toggleSpin('${key.replace(/'/g, "\\'")}')" title="Pin to Current Rotation">📌</button>
-              ${isDone ? `
-                <select class="rating-select" onchange="updateRating('${key.replace(/'/g, "\\'")}', this.value)">
-                  <option value="">${currentRating !== null ? currentRating + '/10' : '⭐ Rating'}</option>
-                  ${Array.from({length: 10}, (_, i) => i + 1).map(num => `
-                    <option value="${num}" ${currentRating === num ? 'selected' : ''}>${num}/10</option>
-                  `).join('')}
-                  ${currentRating !== null ? `<option value="">Reset</option>` : ''}
-                </select>
-              ` : ''}
-              <button class="item-delete" onclick="deleteAlbum('${a.name}', '${al.replace(/'/g, "\\'")}')">✕</button>
-            </div>
-          </div>
-        `;
-      }).join('');
-
-      card.innerHTML = `
+      let cardHtml = `
         <div class="artist-header">
-          <span class="artist-name">${a.name}</span>
-          <div class="bar-track" style="margin: 0;">
-            <div class="bar-fill" style="width:${pct}%; background:${phase.color}" data-bar="${a.name}"></div>
+          <div class="artist-name">${a.name}</div>
+          <div class="artist-progress-bar-container">
+            <div class="artist-progress-bar-fill" data-bar="${a.name}" style="width: ${pct}%"></div>
           </div>
-          <span class="pct" data-pct="${a.name}">${pct}%</span>
+          <div class="pct" data-pct="${a.name}">${pct}%</div>
           <div class="card-actions">
-            <button class="quick-add-btn" onclick="addSingleTrack('${a.name}')">➕ Add Track</button>
-            <button class="action-btn" onclick="deleteArtist('${a.name}')" title="Delete Artist">🗑️</button>
+            <button class="quick-add-btn" onclick="addSingleTrack('${a.name.replace(/'/g, "\\'")}')">➕ Add Track</button>
+            <button class="action-btn" onclick="deleteArtist('${a.name.replace(/'/g, "\\'")}')" style="color: var(--text3)">🗑️ Remove</button>
           </div>
         </div>
         <div class="albums">
-          ${albumsGridHtml}
-        </div>
       `;
-      cardsGrid.appendChild(card);
+
+      a.albums.forEach(al => {
+        const key = `${a.name}|${al}`;
+        const stateObj = progressState[key] || { completed: false, rating: null };
+        const isDone = stateObj.completed;
+        const currentRating = stateObj.rating || "";
+        const isSpinning = currentSpinning === key;
+
+        let options = '<option value="">-</option>';
+        for(let i=1; i<=10; i++) {
+          options += `<option value="${i}" ${currentRating == i ? 'selected' : ''}>${i}</option>`;
+        }
+
+        cardHtml += `
+          <div class="album-row">
+            <div class="album-left" onclick="window.toggle('${key.replace(/'/g, "\\'")}', '${a.name.replace(/'/g, "\\'")}')">
+              <div class="album-check ${isDone ? 'done' : ''}" data-key="${key}"></div>
+              <div class="album-label ${isDone ? 'done' : ''}" data-label="${key}" title="${al}">${al}</div>
+            </div>
+            <div class="album-actions">
+              <button class="spin-btn ${isSpinning ? 'active' : ''}" data-spin-key="${key}" onclick="toggleSpin('${key.replace(/'/g, "\\\\'")}')">📌</button>
+              <select class="rating-select" onchange="updateRating('${key.replace(/'/g, "\\'")}', this.value)">
+                ${options}
+              </select>
+              <button class="item-delete" onclick="deleteAlbum('${a.name.replace(/'/g, "\\'")}', '${al.replace(/'/g, "\\'")}')">❌</button>
+            </div>
+          </div>
+        `;
+      });
+
+      cardHtml += `</div>`;
+      card.innerHTML = cardHtml;
+      grid.appendChild(card);
     });
-    
-    section.appendChild(cardsGrid);
+
     container.appendChild(section);
   });
-  
-  updateOverall();
-  renderSpinningBanner();
-  renderLeaderboard();
 }
 
-init();
+function exportData() {
+  const backup = {
+    data: workingData,
+    state: progressState,
+    streak: systemStreak
+  };
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backup));
+  const downloadAnchor = document.createElement('a');
+  downloadAnchor.setAttribute("href", dataStr);
+  downloadAnchor.setAttribute("download", `music_tracker_backup_${new Date().toISOString().slice(0,10)}.json`);
+  document.body.appendChild(downloadAnchor);
+  downloadAnchor.click();
+  downloadAnchor.remove();
+}
+
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const imported = JSON.parse(e.target.result);
+      if (imported.data && imported.state) {
+        workingData = imported.data;
+        progressState = imported.state;
+        systemStreak = imported.streak || 0;
+        
+        saveStructure();
+        saveState();
+        localStorage.setItem(STORAGE_STREAK_KEY, systemStreak);
+        
+        document.getElementById('stat-streak').textContent = `${systemStreak} Days`;
+        renderBadges();
+        renderTracker();
+        renderSpinningBanner();
+        renderLeaderboard();
+        updateOverall();
+        generateRecommendation();
+        alert("Database successfully restored!");
+      } else {
+        alert("Invalid backup file format.");
+      }
+    } catch (err) {
+      alert("Error reading backup file.");
+    }
+  };
+  reader.readAsText(file);
+}
+
+// Kickstart configuration lifecycle
+window.onload = function() {
+  init();
+  updateOverall();
+};
 </script>
 </body>
 </html>
